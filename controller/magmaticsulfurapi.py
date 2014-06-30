@@ -65,13 +65,19 @@ class MagmaticSulfurAPI(Resource):
             for arg in args:
                 tbl   = arg['region']
                 cname = getattr(magmaticsulfur, tbl.upper())
-                item  = cname(time=arg['date'], olvinc_sppm=arg['olvinc_sppm'], sid=arg['sid'])
-                lf.debug('Attempting to insert magmaticsulfur observation for region=%s, date=%s, olvinc_sppm=%s, '\
-                         'sid=%s'
-                        % (arg['region'], arg['date'], arg['olvinc_sppm'], arg['sid']))
-                db.session.add(item)
+                d     = date_to_j2k(arg['date'], False)
+                item  = cname.query.filter_by(timestamp = d).first()
+                if item:
+                    lf.debug('Updating item with j2ksec: ' + str(d))
+                    item.olvinc_sppm = '%.2f' % float(arg['olvinc_sppm']) if arg['olvinc_sppm'] != '' else None
+                else:
+                    item  = cname(time=arg['date'], olvinc_sppm=arg['olvinc_sppm'], sid=arg['sid'])
+                    lf.debug('Attempting to insert magmaticsulfur observation for region=%s, date=%s, olvinc_sppm=%s, '\
+                             'sid=%s'
+                             % (arg['region'], arg['date'], arg['olvinc_sppm'], arg['sid']))
+                    db.session.add(item)
             db.session.commit()
-            lf.debug('Item(s) added')
+            lf.debug('Item(s) added/Updated')
             return { 'status': 'ok' }, 201 
         except:
             return { 'status': 'error' }, 400
