@@ -72,17 +72,31 @@ class IncompatiblesAPI(Resource):
             for arg in args:
                 tbl   = arg['region']
                 cname = getattr(incompatibles, tbl.upper())
-                item  = cname(time=arg['date'], wr_k2o_tio2=arg['wr_k2o_tio2'], gls_k2o_tio2=arg['gls_k2o_tio2'], 
-                              wr_cao_al2o3=arg['wr_cao_al2o3'], wr_cao_tio2=arg['wr_cao_tio2'], 
-                              wr_la_yb_inaa=arg['wr_la_yb_inaa'], wr_zr_y_wdx=arg['wr_zr_y_wdx'], 
-                              wr_zr_y_edx=arg['wr_zr_y_edx'], wr_sr_edx=arg['wr_sr_edx'], sid=arg['sid'])
-                lf.debug('Attempting to insert incompatibles observation for region=%s, date=%s, wr_k2o_tio2=%s, '\
-                         'gls_k2o_tio2=%s, wr_cao_al2o3=%s, wr_cao_tio2=%s, wr_la_yb_inaa=%s, wr_zr_y_wdx=%s, '\
-                         'wr_zr_y_edx=%s, wr_sr_edx=%s, sid=%s'
-                        % (arg['region'], arg['date'], arg['wr_k2o_tio2'], arg['gls_k2o_tio2'], arg['wr_cao_al2o3'], 
-                           arg['wr_cao_tio2'], arg['wr_la_yb_inaa'], arg['wr_zr_y_wdx'], arg['wr_zr_y_edx'], 
-                           arg['wr_sr_edx'], arg['sid']))
-                db.session.add(item)
+                d     = date_to_j2k(arg['date'], False)
+                item  = cname.query.filter_by(timestamp = d).first()
+                if item:
+                    lf.debug('Updating item for j2ksec: ' + str(d))
+                    item.wr_k2o_tio2   = '%.3f' % float(arg['wr_k2o_tio2']) if arg['wr_k2o_tio2'] != '' else None
+                    item.gls_k2o_tio2  = '%.3f' % float(arg['gls_k2o_tio2']) if arg['gls_k2o_tio2'] != '' else None
+                    item.wr_cao_al2o3  = '%.3f' % float(arg['wr_cao_al2o3']) if arg[''] != 'wr_cao_al2o3' else None
+                    item.wr_cao_tio2   = '%.3f' % float(arg['wr_cao_tio2']) if arg[''] != 'wr_cao_tio2' else None
+                    item.wr_la_yb_inaa = '%.3f' % float(arg['wr_la_yb_inaa']) if arg[''] != 'wr_la_yb_inaa' else None
+                    item.wr_zr_y_wdx   = '%.3f' % float(arg['wr_zr_y_wdx']) if arg[''] != 'wr_zr_y_wdx' else None
+                    item.wr_zr_y_edx   = '%.3f' % float(arg['wr_zr_y_edx']) if arg[''] != 'wr_zr_y_edx' else None
+                    item.wr_sr_edx     = '%.3f' % float(arg['wr_sr_edx']) if arg[''] != 'wr_sr_edx' else None
+                    item.sid           = arg['sid'] if arg['sid'] != '' else None
+                else:
+                    item = cname(time=arg['date'], wr_k2o_tio2=arg['wr_k2o_tio2'], gls_k2o_tio2=arg['gls_k2o_tio2'], 
+                                  wr_cao_al2o3=arg['wr_cao_al2o3'], wr_cao_tio2=arg['wr_cao_tio2'], 
+                                  wr_la_yb_inaa=arg['wr_la_yb_inaa'], wr_zr_y_wdx=arg['wr_zr_y_wdx'], 
+                                  wr_zr_y_edx=arg['wr_zr_y_edx'], wr_sr_edx=arg['wr_sr_edx'], sid=arg['sid'])
+                    lf.debug('Attempting to insert incompatibles observation for region=%s, date=%s, wr_k2o_tio2=%s, '\
+                             'gls_k2o_tio2=%s, wr_cao_al2o3=%s, wr_cao_tio2=%s, wr_la_yb_inaa=%s, wr_zr_y_wdx=%s, '\
+                             'wr_zr_y_edx=%s, wr_sr_edx=%s, sid=%s'
+                            % (arg['region'], arg['date'], arg['wr_k2o_tio2'], arg['gls_k2o_tio2'], arg['wr_cao_al2o3'], 
+                               arg['wr_cao_tio2'], arg['wr_la_yb_inaa'], arg['wr_zr_y_wdx'], arg['wr_zr_y_edx'], 
+                               arg['wr_sr_edx'], arg['sid']))
+                    db.session.add(item)
             db.session.commit()
             lf.debug('Item(s) added')
             return { 'status': 'ok' }, 201 

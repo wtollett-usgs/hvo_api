@@ -5,6 +5,8 @@ from model.ash import HMM
 from sqlalchemy import func
 from valverest.database import db
 from valverest.util import j2k_to_date, create_date_from_input, date_to_j2k
+
+import json
 import logging
 
 class AshAPI(Resource):
@@ -48,13 +50,21 @@ class AshAPI(Resource):
     def post(self):
         lf = logging.getLogger('file')
         try:
-            args = request.form
-            item = HMM(time=args['date'], ar=args['ar'], pj=args['pj'])
-            lf.debug("Attempting to insert ash observation for date=%s, accumrate=%s, percentjuvenile=%s" % 
-                    (args['date'], args['ar'], args['pj']))
-            db.session.add(item)
+            args = json.loads(request.data)
+            for arg in args:
+                d    = date_to_j2k(arg['date'], False)
+                item = HMM.query.filter_by(timestamp = d).first()
+                if item:
+                    lf.debug('Updating item for j2ksec: ' + str(d))
+                    item.accumrate       = '%.3f' % float(arg['ar']) if arg['ar'] != '' else None
+                    item.percentjuvenile = '%.2f' % float(arg['pj']) if arg['pj'] != '' else None
+                else:
+                    item = HMM(time=arg['date'], ar=arg['ar'], pj=arg['pj'])
+                    lf.debug("Attempting to insert ash observation for date=%s, accumrate=%s, percentjuvenile=%s" % 
+                            (arg['date'], arg['ar'], arg['pj']))
+                    db.session.add(item)
             db.session.commit()
-            lf.debug("Item added")
+            lf.debug("Item added/updated")
             return { 'status': 'ok' }, 201
         except:
             lf.debug("Insert failed")
