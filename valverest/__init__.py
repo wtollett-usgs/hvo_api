@@ -7,6 +7,7 @@ from controller.ashapi import AshAPI
 from controller.incompatiblesapi import IncompatiblesAPI
 from controller.mgosystematicsapi import MgOSystematicsAPI
 from controller.magmaticsulfurapi import MagmaticSulfurAPI
+from controller.logsapi import LogsAPI
 from valverest.database import db, db2, db3, db4
 import logging
 
@@ -25,5 +26,6 @@ def create_app(*args, **kwargs):
     api.add_resource(IncompatiblesAPI, '/api/incompatibles', endpoint = 'incompatibles')
     api.add_resource(MgOSystematicsAPI, '/api/mgosys', endpoint = 'mgosys')
     api.add_resource(MagmaticSulfurAPI, '/api/magmaticsulfur', endpoint = 'magmaticsulfur')
+    api.add_resource(LogsAPI, '/api/logs', endpoint = 'logs')
     logging.basicConfig(filename='error_log', level=logging.DEBUG)
     return app
