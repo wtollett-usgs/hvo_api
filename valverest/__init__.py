@@ -27,5 +27,5 @@ def create_app(*args, **kwargs):
     api.add_resource(MgOSystematicsAPI, '/api/mgosys', endpoint = 'mgosys')
     api.add_resource(MagmaticSulfurAPI, '/api/magmaticsulfur', endpoint = 'magmaticsulfur')
     api.add_resource(LogsAPI, '/api/logs', endpoint = 'logs')
-    logging.basicConfig(filename='error_log', level=logging.DEBUG)
+    logging.basicConfig(filename='%s' % app.config['LOGFILE'], level=logging.DEBUG)
     return app
