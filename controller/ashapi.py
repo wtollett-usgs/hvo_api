@@ -4,7 +4,7 @@ from flask.ext.restful.representations.json import settings as json_settings
 from model.ash import HMM
 from sqlalchemy import func
 from valverest.database import db
-from valverest.util import j2k_to_date, create_date_from_input, date_to_j2k
+from valverest.util import clean_input, j2k_to_date, create_date_from_input, date_to_j2k
 
 import json
 import logging
@@ -17,15 +17,15 @@ class AshAPI(Resource):
         self.reqparse.add_argument('endtime', type = str, required = False, default='now')
         self.reqparse.add_argument('tz', type = str, required = False, default = 'HST')
         super(AshAPI, self).__init__()
-    
+
     def get(self):
         # Return expected parameter output, also set indent settings
         if not request.args:
             return self.create_param_string(), 200
-            
+
         if (not current_app.debug) and (json_settings and json_settings['indent']):
             json_settings['indent'] = None
-            
+
         args = self.reqparse.parse_args()
         if 'op' in args and args['op'] == 'time':
             t = db.session.query(func.max(HMM.timestamp)).one()[0]
@@ -46,12 +46,13 @@ class AshAPI(Resource):
                        'percentjuvenile': d.percentjuvenile })
             return { 'nr': len(data),
                      'records': output }, 200
-        
+
     def post(self):
         lf = logging.getLogger('file')
         try:
             args = json.loads(request.data)
             for arg in args:
+                arg  = clean_input(arg)
                 d    = date_to_j2k(arg['date'], False)
                 item = HMM.query.filter_by(timestamp = d).first()
                 if item:
@@ -60,7 +61,7 @@ class AshAPI(Resource):
                     item.percentjuvenile = '%.2f' % float(arg['pj']) if arg['pj'] != '' else None
                 else:
                     item = HMM(time=arg['date'], ar=arg['ar'], pj=arg['pj'])
-                    lf.debug("Attempting to insert ash observation for date=%s, accumrate=%s, percentjuvenile=%s" % 
+                    lf.debug("Attempting to insert ash observation for date=%s, accumrate=%s, percentjuvenile=%s" %
                             (arg['date'], arg['ar'], arg['pj']))
                     db.session.add(item)
             db.session.commit()
@@ -69,19 +70,19 @@ class AshAPI(Resource):
         except:
             lf.debug("Insert failed")
             return { 'status': 'error inserting item, check logs' }, 200
-            
+
     @staticmethod
     def create_param_string():
         if not current_app.debug:
             json_settings['indent']    = 4
             json_settings['sort_keys'] = True
-            
+
         params = {}
-        params['starttime'] = { 'type': 'string', 'required': 'yes', 
-                                'note': 'Will also accept things like -6m for last 6 months.', 
+        params['starttime'] = { 'type': 'string', 'required': 'yes',
+                                'note': 'Will also accept things like -6m for last 6 months.',
                                 'format': 'yyyy[MMdd[hhmm]]' }
         params['endtime'] = { 'type': 'string', 'required': 'no', 'format': 'yyyy[MMdd[hhmm]]', 'default': 'now' }
         params['tz'] = { 'type': 'string', 'required': 'no', 'default': 'HST' }
-        params['op'] = { 'type': 'string', 'required': 'no', 'options': 'time', 
+        params['op'] = { 'type': 'string', 'required': 'no', 'options': 'time',
                          'note': 'Returns datetime for last record in the database. Other paramaters not required.'}
         return params
