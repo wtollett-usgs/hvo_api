@@ -4,7 +4,7 @@ from flask.ext.restful.representations.json import settings as json_settings
 from model import magmaticsulfur
 from sqlalchemy import func
 from valverest.database import db4 as db
-from valverest.util import j2k_to_date, create_date_from_input, date_to_j2k
+from valverest.util import clean_input, j2k_to_date, create_date_from_input, date_to_j2k
 
 import json
 import logging
@@ -18,20 +18,20 @@ class MagmaticSulfurAPI(Resource):
         self.reqparse.add_argument('endtime', type = str, required = False, default='now')
         self.reqparse.add_argument('tz', type = str, required = False, default='HST')
         super(MagmaticSulfurAPI, self).__init__()
-    
+
     def get(self):
         # Return expected parameter output, also set indent settings
         if not request.args:
             return self.create_param_string(), 200
-            
+
         if (not current_app.debug) and (json_settings and json_settings['indent']):
             json_settings['indent'] = None
-            
+
         args = self.reqparse.parse_args()
         if 'op' in args and args['op'] == 'time':
             kerz = db.session.query(func.max(magmaticsulfur.KERZ.timestamp)).one()[0]
             hmm  = db.session.query(func.max(magmaticsulfur.HMM.timestamp)).one()[0]
-            return { 'KERZ': j2k_to_date(kerz, True).strftime("%Y-%m-%d %H:%M:%S.%f") if kerz else '', 
+            return { 'KERZ': j2k_to_date(kerz, True).strftime("%Y-%m-%d %H:%M:%S.%f") if kerz else '',
                      'HMM': j2k_to_date(hmm, True).strftime("%Y-%m-%d %H:%M:%S.%f") if hmm else ''}, 200
         else:
             channels  = args['channel'].split(',')
@@ -51,18 +51,19 @@ class MagmaticSulfurAPI(Resource):
                 List = out.append
                 count += len(data)
                 for d in data:
-                    List({ 'date': Date(d.timestamp, (args['tz'] == 'HST')).strftime('%Y-%m-%d %H:%M:%S.%f'), 
+                    List({ 'date': Date(d.timestamp, (args['tz'] == 'HST')).strftime('%Y-%m-%d %H:%M:%S.%f'),
                             'olvinc_sppm':  d.olvinc_sppm,
                             'sid':          d.sid })
                 output[channel] = out
-            return { 'nr': count, 
+            return { 'nr': count,
                      'records': output }, 200
-        
+
     def post(self):
         lf = logging.getLogger('file')
         try:
             args  = json.loads(request.data)
             for arg in args:
+                arg   = clean_input(arg)
                 tbl   = arg['region']
                 cname = getattr(magmaticsulfur, tbl.upper())
                 d     = date_to_j2k(arg['date'], False)
@@ -78,24 +79,24 @@ class MagmaticSulfurAPI(Resource):
                     db.session.add(item)
             db.session.commit()
             lf.debug('Item(s) added/Updated')
-            return { 'status': 'ok' }, 201 
+            return { 'status': 'ok' }, 201
         except:
             return { 'status': 'error' }, 400
-            
+
     @staticmethod
     def create_param_string():
         if not current_app.debug:
             json_settings['indent']    = 4
             json_settings['sort_keys'] = True
-            
+
         params = {}
-        params['channel'] = { 'type': 'string', 'required': 'yes', 'note': 'can be comma-separated list.', 
+        params['channel'] = { 'type': 'string', 'required': 'yes', 'note': 'can be comma-separated list.',
                               'options': 'KERZ, HMM' }
-        params['starttime'] = { 'type': 'string', 'required': 'yes', 
-                                'note': 'Will also accept things like -6m for last 6 months.', 
+        params['starttime'] = { 'type': 'string', 'required': 'yes',
+                                'note': 'Will also accept things like -6m for last 6 months.',
                                 'format': 'yyyy[MMdd[hhmm]]' }
         params['endtime'] = { 'type': 'string', 'required': 'no', 'format': 'yyyy[MMdd[hhmm]]', 'default': 'now' }
         params['tz'] = { 'type': 'string', 'required': 'no', 'default': 'HST' }
-        params['op'] = { 'type': 'string', 'required': 'no', 'options': 'time', 
+        params['op'] = { 'type': 'string', 'required': 'no', 'options': 'time',
                          'note': 'Returns datetime for last record in the database. Other parameters not required.'}
         return params
