@@ -1,17 +1,16 @@
 from flask import request
 from flask.ext.restful import Resource
+from json import loads as jsonload
+from logging import getLogger
 from model import hvologs, cvologs, avologs
 from valverest.database import db2 as hvodb, db3 as cvodb, db4 as avodb
 
-import json
-import logging
-
 class LogsAPI(Resource):
     def post(self):
-        lf = logging.getLogger('file')
+        lf = getLogger('file')
         print "In Post()"
         try:
-            arg         = json.loads(request.data)
+            arg         = jsonload(request.data)
             observatory = arg['db']
             if observatory == 'hvo':
                 cname = hvologs

@@ -13,12 +13,12 @@ def date_to_j2k(d, hst=False):
     """
     if isinstance(d, basestring):
         d = datetime.strptime(d, "%Y-%m-%d %H:%M:%S")
-    
+
     if hst:
         return (mktime(d.timetuple())) - hst_j2koffset
     else:
         return (mktime(d.timetuple())) - gmt_j2koffset
-    
+
 def j2k_to_date(j2k, hst=False):
     """
     Return the date for the passed in j2k value.
@@ -29,7 +29,7 @@ def j2k_to_date(j2k, hst=False):
         return datetime.fromtimestamp(j2k + hst_j2koffset)
     else:
         return datetime.fromtimestamp(j2k + gmt_j2koffset)
-        
+
 def create_date_from_input(start, end):
     if start.startswith('-'):
         s = create_relative_date(start)
@@ -52,7 +52,7 @@ def create_date_from_input(start, end):
             end += '59999'
         e = datetime.strptime(end, "%Y%m%d%H%M%S%f")
     return s, e
-    
+
 def create_relative_date(s):
     period = s[-1:]
     time = int(s[1:-1]) * -1
@@ -72,3 +72,8 @@ def create_relative_date(s):
         label = 'years'
     kwargs = { label: time }
     return datetime.now() + relativedelta(**kwargs)
+
+def clean_input(arg):
+    for key,val in arg.iteritems():
+        arg[key] = val.strip() if isinstance(val, basestring) else val
+    return arg
