@@ -11,7 +11,7 @@ class LogsAPI(Resource):
         print "In Post()"
         try:
             arg         = jsonload(request.data)
-            observatory = arg['db']
+            observatory = arg['db'].lower()
             if observatory == 'hvo':
                 cname = hvologs
                 db    = hvodb
@@ -22,8 +22,8 @@ class LogsAPI(Resource):
                 cname = avologs
                 db    = avodb
 
-            user     = cname.User.query.filter_by(username = arg['user']).first()
-            item     = cname.Post(user.id, arg['date'], arg['subject'], arg['text'], arg['user'])
+            user     = cname.User.query.filter_by(email = arg['user']).first()
+            item     = cname.Post(user.id, arg['postdate'], arg['obsdate'], arg['subject'], arg['text'], user.username)
             volcname = cname.ListVolc.query.filter_by(Volcano = arg['volcano']).first()
             volc     = cname.Volcano.query.filter_by(volcano_name = arg['volcano']).first()
             lf.debug('Attempting to insert log entry for observatory=%s, date=%s, user=%s, subject=%s, text=%s'

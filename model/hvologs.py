@@ -14,12 +14,12 @@ class Post(db.Model):
     observer   = db.Column(db.Text)
     sortdate   = db.Column(db.DateTime)
 
-    def __init__(self, uid, dt, subject, text, observer):
+    def __init__(self, uid, postdt, obsdt, subject, text, observer):
         self.userID     = uid
         self.obstypeID  = 4 # Seismology
-        self.observtime = dt
-        self.obsdate    = dt
-        self.sortdate   = dt
+        self.observtime = postdt
+        self.obsdate    = obsdt
+        self.sortdate   = obsdt
         self.subject    = subject
         self.obstext    = text
         self.observer   = observer
@@ -30,6 +30,7 @@ class User(db.Model):
 
     id       = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True)
+    email    = db.Column(db.String(200))
 
 class ListVolc(db.Model):
     __tablename__ = 'tbllistvolc'
