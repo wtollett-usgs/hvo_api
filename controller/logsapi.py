@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import request
 from flask.ext.restful import Resource
 from json import loads as jsonload
@@ -8,7 +9,6 @@ from valverest.database import db2 as hvodb, db3 as cvodb, db4 as avodb
 class LogsAPI(Resource):
     def post(self):
         lf = getLogger('file')
-        print "In Post()"
         try:
             arg         = jsonload(request.data)
             observatory = arg['db'].lower()
@@ -22,8 +22,10 @@ class LogsAPI(Resource):
                 cname = avologs
                 db    = avodb
 
+            pdate    = datetime.strptime(arg['postdate'], '%m/%d/%Y %H:%M:%S')
+            odate    = datetime.strptime(arg['obsdate'], '%m/%d/%Y %H:%M:%S')
             user     = cname.User.query.filter_by(email = arg['user']).first()
-            item     = cname.Post(user.id, arg['postdate'], arg['obsdate'], arg['subject'], arg['text'], user.username)
+            item     = cname.Post(user.id, pdate, odate, arg['subject'], arg['text'], user.username)
             volcname = cname.ListVolc.query.filter_by(Volcano = arg['volcano']).first()
             volc     = cname.Volcano.query.filter_by(volcano_name = arg['volcano']).first()
             lf.debug('Attempting to insert log entry for observatory=%s, date=%s, user=%s, subject=%s, text=%s'
