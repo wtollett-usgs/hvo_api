@@ -54,15 +54,15 @@ class LogsAPI(Resource):
                 cname = avologs
                 db    = avodb
 
-            pdate    = datetime.strptime(arg['postdate'], '%m/%d/%Y %H:%M:%S')
-            odate    = datetime.strptime(arg['obsdate'], '%m/%d/%Y %H:%M:%S')
+            pdate    = datetime.strptime(arg['postdate'], '%Y-%m-%d %H:%M:%S')
+            odate    = datetime.strptime(arg['obsdate'], '%Y-%m-%d %H:%M')
             user     = cname.User.query.filter_by(email = arg['user']).first()
             item     = cname.Post(user.id, pdate, odate, arg['subject'], arg['text'], user.username)
             volcname = cname.ListVolc.query.filter_by(Volcano = arg['volcano']).first()
             volc     = cname.Volcano.query.filter_by(volcano_name = arg['volcano']).first()
-            lf.debug(s = ('Attempting to insert log entry for observatory=%s, postdate=%s, obsdate=%s, user=%s, '
-                          'subject=%s, text=%s')
-                    % (observatory, arg['postdate'], arg['obsdate'], arg['user'], arg['subject'], arg['text']))
+            s        = ('Attempting to insert log entry for observatory=%s, postdate=%s, obsdate=%s, user=%s, '
+                        'subject=%s, text=%s')
+            lf.debug(s % (observatory, arg['postdate'], arg['obsdate'], arg['user'], arg['subject'], arg['text']))
             db.session.add(item)
             db.session.commit()
             linkitem = cname.VolcLink(volcname.VolcNameID, item.obsID, volc.volcano_id)
