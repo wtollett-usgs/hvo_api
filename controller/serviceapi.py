@@ -8,4 +8,5 @@ class ServiceAPI(Resource):
                  'INCOMPATIBLES_URL': url_for('incompatibles'),
                  'LOGS_URL': url_for('logs'),
                  'MGOSYSTEMATICS_URL': url_for('mgosys'),
-                 'MAGMATICSULFUR_URL': url_for('magmaticsulfur') }, 200
+                 'MAGMATICSULFUR_URL': url_for('magmaticsulfur'),
+                 'RSAM_URL': url_for('rsam') }, 200

@@ -11,3 +11,6 @@ db3 = SQLAlchemy()
 
 # Magmatic Sulfur and AVO Logs
 db4 = SQLAlchemy()
+
+# RSAM
+db5 = SQLAlchemy()
