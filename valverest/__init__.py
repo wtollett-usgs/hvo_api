@@ -8,7 +8,8 @@ from controller.incompatiblesapi import IncompatiblesAPI
 from controller.mgosystematicsapi import MgOSystematicsAPI
 from controller.magmaticsulfurapi import MagmaticSulfurAPI
 from controller.logsapi import LogsAPI
-from valverest.database import db, db2, db3, db4
+from controller.rsamapi import RSAMAPI
+from valverest.database import db, db2, db3, db4, db5
 import logging
 
 def create_app(*args, **kwargs):
@@ -20,6 +21,7 @@ def create_app(*args, **kwargs):
     db2.init_app(app)
     db3.init_app(app)
     db4.init_app(app)
+    db5.init_app(app)
     api.add_resource(ServiceAPI, '/', '/api')
     api.add_resource(EDXRFAPI, '/api/edxrf', endpoint = 'edxrf')
     api.add_resource(AshAPI, '/api/ash', endpoint = 'ash')
@@ -27,5 +29,6 @@ def create_app(*args, **kwargs):
     api.add_resource(MgOSystematicsAPI, '/api/mgosys', endpoint = 'mgosys')
     api.add_resource(MagmaticSulfurAPI, '/api/magmaticsulfur', endpoint = 'magmaticsulfur')
     api.add_resource(LogsAPI, '/api/logs', endpoint = 'logs')
+    api.add_resource(RSAMAPI, '/api/rsam', endpoint = 'rsam')
     logging.basicConfig(filename='%s' % app.config['LOGFILE'], level=logging.DEBUG)
     return app
