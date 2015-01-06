@@ -9,4 +9,5 @@ class ServiceAPI(Resource):
                  'LOGS_URL': url_for('logs'),
                  'MGOSYSTEMATICS_URL': url_for('mgosys'),
                  'MAGMATICSULFUR_URL': url_for('magmaticsulfur'),
-                 'RSAM_URL': url_for('rsam') }, 200
+                 'RSAM_URL': url_for('rsam'),
+                 'TREMOR_URL': url_for('tremor') }, 200
