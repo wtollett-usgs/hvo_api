@@ -9,6 +9,7 @@ from controller.mgosystematicsapi import MgOSystematicsAPI
 from controller.magmaticsulfurapi import MagmaticSulfurAPI
 from controller.logsapi import LogsAPI
 from controller.rsamapi import RSAMAPI
+from controller.tremorapi import TremorAPI
 from valverest.database import db, db2, db3, db4, db5
 import logging
 
@@ -30,5 +31,6 @@ def create_app(*args, **kwargs):
     api.add_resource(MagmaticSulfurAPI, '/api/magmaticsulfur', endpoint = 'magmaticsulfur')
     api.add_resource(LogsAPI, '/api/logs', endpoint = 'logs')
     api.add_resource(RSAMAPI, '/api/rsam', endpoint = 'rsam')
+    api.add_resource(TremorAPI, '/api/tremor', endpoint = 'tremor')
     logging.basicConfig(filename='%s' % app.config['LOGFILE'], level=logging.DEBUG)
     return app
