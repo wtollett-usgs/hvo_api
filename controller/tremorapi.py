@@ -71,7 +71,7 @@ class TremorAPI(Resource):
                     rindices.sort()
                     for i in range(0, len(rindices)):
                         d = data[rindices[i]]
-                        List({ 'starttime': d.starttime.strftime("%Y-%m-%d %H:%M:%S.%f"),
+                        List({ 'starttime': d.starttime.strftime("%Y-%m-%d %H:%M:%S"),
                                'latitude': float(d.latitude),
                                'longitude': float(d.longitude),
                                'depth': float(d.depth),
@@ -83,7 +83,7 @@ class TremorAPI(Resource):
                              'shown': len(rindices) }, 200
                 else:
                     for d in data:
-                        List({ 'starttime': d.starttime.strftime("%Y-%m-%d %H:%M:%S.%f"),
+                        List({ 'starttime': d.starttime.strftime("%Y-%m-%d %H:%M:%S"),
                                'latitude': float(d.latitude),
                                'longitude': float(d.longitude),
                                'depth': float(d.depth),
@@ -92,7 +92,7 @@ class TremorAPI(Resource):
                                'stations': ['%s.%s' % (x.sta, x.chan) for x in d.stations] })
             else:
                 for d in data:
-                    List({ 'starttime': d.starttime.strftime("%Y-%m-%d %H:%M:%S.%f"),
+                    List({ 'starttime': d.starttime.strftime("%Y-%m-%d %H:%M:%S"),
                            'latitude': float(d.latitude),
                            'longitude': float(d.longitude),
                            'depth': float(d.depth),
