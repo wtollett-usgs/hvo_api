@@ -10,4 +10,5 @@ class ServiceAPI(Resource):
                  'MGOSYSTEMATICS_URL': url_for('mgosys'),
                  'MAGMATICSULFUR_URL': url_for('magmaticsulfur'),
                  'RSAM_URL': url_for('rsam'),
-                 'TREMOR_URL': url_for('tremor') }, 200
+                 'TREMOR_URL': url_for('tremor'),
+                 'LAVALEVEL_URL': url_for('lavalevel') }, 200
