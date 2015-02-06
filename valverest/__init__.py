@@ -7,6 +7,7 @@ from controller.ashapi import AshAPI
 from controller.incompatiblesapi import IncompatiblesAPI
 from controller.mgosystematicsapi import MgOSystematicsAPI
 from controller.magmaticsulfurapi import MagmaticSulfurAPI
+from controller.lavalevelapi import LavaLevelAPI
 from controller.logsapi import LogsAPI
 from controller.rsamapi import RSAMAPI
 from controller.tremorapi import TremorAPI
@@ -24,12 +25,13 @@ def create_app(*args, **kwargs):
     db4.init_app(app)
     db5.init_app(app)
     api.add_resource(ServiceAPI, '/', '/api')
-    api.add_resource(EDXRFAPI, '/api/edxrf', endpoint = 'edxrf')
     api.add_resource(AshAPI, '/api/ash', endpoint = 'ash')
+    api.add_resource(EDXRFAPI, '/api/edxrf', endpoint = 'edxrf')
     api.add_resource(IncompatiblesAPI, '/api/incompatibles', endpoint = 'incompatibles')
-    api.add_resource(MgOSystematicsAPI, '/api/mgosys', endpoint = 'mgosys')
-    api.add_resource(MagmaticSulfurAPI, '/api/magmaticsulfur', endpoint = 'magmaticsulfur')
+    api.add_resource(LavaLevelAPI, '/api/lavalevel', endpoint = 'lavalevel')
     api.add_resource(LogsAPI, '/api/logs', endpoint = 'logs')
+    api.add_resource(MagmaticSulfurAPI, '/api/magmaticsulfur', endpoint = 'magmaticsulfur')
+    api.add_resource(MgOSystematicsAPI, '/api/mgosys', endpoint = 'mgosys')
     api.add_resource(RSAMAPI, '/api/rsam', endpoint = 'rsam')
     api.add_resource(TremorAPI, '/api/tremor', endpoint = 'tremor')
     logging.basicConfig(filename='%s' % app.config['LOGFILE'], level=logging.DEBUG)
