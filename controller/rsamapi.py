@@ -27,15 +27,15 @@ class RSAMAPI(Resource):
         if (not current_app.debug) and (json_settings and json_settings['indent']):
             json_settings['indent'] = None
 
-        args = self.reqparse.parse_args()
-        channels   = args['channel'].split(',')
+        args     = self.reqparse.parse_args()
+        channels = args['channel'].split(',')
         if set([x.upper() for x in channels]).difference(rsam._tablenames):
             return { 'Error': 'unknown channel' }
 
         args       = self.reqparse.parse_args()
         start, end = create_date_from_input(args['starttime'], args['endtime'])
         output     = {}
-        count = 0
+        count      = 0
         for channel in channels:
             queryclauses = []
             orderby      = []
