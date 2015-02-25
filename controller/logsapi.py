@@ -58,17 +58,25 @@ class LogsAPI(Resource):
             odate    = datetime.strptime(arg['obsdate'], '%Y-%m-%d %H:%M')
             user     = cname.User.query.filter_by(email = arg['user']).first()
             item     = cname.Post(user.id, pdate, odate, arg['subject'], arg['text'], user.username)
-            volcname = cname.ListVolc.query.filter_by(Volcano = arg['volcano']).first()
-            volc     = cname.Volcano.query.filter_by(volcano_name = arg['volcano']).first()
-            s        = ('Attempting to insert log entry for observatory=%s, postdate=%s, obsdate=%s, user=%s, '
-                        'subject=%s, text=%s')
+
+            # Find volnames and volc_ids
+            volcanoes = arg['volcano'].split(',')
+            volcname  = []
+            volc      = []
+            for v in volcanoes:
+                volcname.append(cname.ListVolc.query.filter_by(Volcano = v).first())
+                volc.append(cname.Volcano.query.filter_by(volcano_name = v).first())
+
+            s = ('Attempting to insert log entry for observatory=%s, postdate=%s, obsdate=%s, user=%s, '
+                 'subject=%s, text=%s')
             lf.debug(s % (observatory, arg['postdate'], arg['obsdate'], arg['user'], arg['subject'], arg['text']))
             db.session.add(item)
             db.session.commit()
-            linkitem = cname.VolcLink(volcname.VolcNameID, item.obsID, volc.volcano_id)
-            lf.debug('Attempting to insert obs/volcano link for VolcNameID=%s, obsID=%s, volcano_id=%s'
-                    % (volcname.VolcNameID, item.obsID, volc.volcano_id))
-            db.session.add(linkitem)
+            for i in range(len(volcanoes)):
+                linkitem = cname.VolcLink(volcname[i].VolcNameID, item.obsID, volc[i].volcano_id)
+                lf.debug('Attempting to insert obs/volcano link for VolcNameID=%s, obsID=%s, volcano_id=%s'
+                        % (volcname[i].VolcNameID, item.obsID, volc[i].volcano_id))
+                db.session.add(linkitem)
             db.session.commit()
             lf.debug('Items added')
             return { 'status': 'ok' }, 201
