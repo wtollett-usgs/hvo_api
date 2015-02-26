@@ -7,6 +7,8 @@ from logging import getLogger
 from model import hvologs, cvologs, avologs
 from valverest.database import db2 as hvodb, db3 as cvodb, db4 as avodb
 
+import traceback
+
 class LogsAPI(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
@@ -55,7 +57,7 @@ class LogsAPI(Resource):
                 db    = avodb
 
             pdate    = datetime.strptime(arg['postdate'], '%Y-%m-%d %H:%M:%S')
-            odate    = datetime.strptime(arg['obsdate'], '%Y-%m-%d %H:%M')
+            odate    = datetime.strptime(arg['obsdate'], '%Y-%m-%d')
             user     = cname.User.query.filter_by(email = arg['user']).first()
             item     = cname.Post(user.id, pdate, odate, arg['subject'], arg['text'], user.username)
 
@@ -80,7 +82,8 @@ class LogsAPI(Resource):
             db.session.commit()
             lf.debug('Items added')
             return { 'status': 'ok' }, 201
-        except:
+        except Exception:
+            lf.debug(traceback.format.exc())
             return { 'status': 'error' }, 400
 
     @staticmethod
