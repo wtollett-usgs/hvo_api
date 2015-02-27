@@ -56,10 +56,18 @@ class LogsAPI(Resource):
                 cname = avologs
                 db    = avodb
 
-            pdate    = datetime.strptime(arg['postdate'], '%Y-%m-%d %H:%M:%S')
-            odate    = datetime.strptime(arg['obsdate'], '%Y-%m-%d')
-            user     = cname.User.query.filter_by(email = arg['user']).first()
-            item     = cname.Post(user.id, pdate, odate, arg['subject'], arg['text'], user.username)
+            pdate = datetime.strptime(arg['postdate'], '%Y-%m-%d %H:%M')
+            odate = datetime.strptime(arg['obsdate'], '%Y-%m-%d %H:%M:%S')
+            user  = cname.User.query.filter_by(email = arg['user']).first()
+            if user:
+                item = cname.Post(user.id, pdate, odate, arg['subject'], arg['text'], user.username)
+            else:
+                item = cname.Post(0, pdate, odate, arg['subject'], arg['text'], '')
+            s = ('Attempting to insert log entry for observatory=%s, postdate=%s, obsdate=%s, user=%s, '
+                 'subject=%s, text=%s')
+            lf.debug(s % (observatory, arg['postdate'], arg['obsdate'], arg['user'], arg['subject'], arg['text']))
+            db.session.add(item)
+            db.session.commit()
 
             # Find volnames and volc_ids
             volcanoes = arg['volcano'].split(',')
@@ -69,11 +77,7 @@ class LogsAPI(Resource):
                 volcname.append(cname.ListVolc.query.filter_by(Volcano = v).first())
                 volc.append(cname.Volcano.query.filter_by(volcano_name = v).first())
 
-            s = ('Attempting to insert log entry for observatory=%s, postdate=%s, obsdate=%s, user=%s, '
-                 'subject=%s, text=%s')
-            lf.debug(s % (observatory, arg['postdate'], arg['obsdate'], arg['user'], arg['subject'], arg['text']))
-            db.session.add(item)
-            db.session.commit()
+            # Insert volcano links
             for i in range(len(volcanoes)):
                 linkitem = cname.VolcLink(volcname[i].VolcNameID, item.obsID, volc[i].volcano_id)
                 lf.debug('Attempting to insert obs/volcano link for VolcNameID=%s, obsID=%s, volcano_id=%s'
@@ -81,9 +85,16 @@ class LogsAPI(Resource):
                 db.session.add(linkitem)
             db.session.commit()
             lf.debug('Items added')
+
+            # Insert 'Earthquake' tag link
+            tagitem = cname.KeywordLink(item.obsID)
+            lf.debug('Attempting to insert obs/keyword link for obsID=%s, keywordid=23' % item.obsID)
+            db.session.add(tagitem)
+            db.session.commit()
+            lf.debug('Item added')
             return { 'status': 'ok' }, 201
         except Exception:
-            lf.debug(traceback.format.exc())
+            lf.debug(traceback.format_exc())
             return { 'status': 'error' }, 400
 
     @staticmethod
