@@ -71,3 +71,13 @@ class KeywordLink(db.Model):
     def __init__(self, obs):
         self.obsid        = obs
         self.obskeywordid = 23 # Earthquake
+
+class Ignore(db.Model):
+    __tablename__ = 'tblobsignore'
+    __bind_key__  = 'hvologs'
+
+    id     = db.Column(db.Integer, primary_key=True)
+    ignore = db.Column(db.String(255))
+
+    def __init__(self, sub):
+        self.ignore = sub
