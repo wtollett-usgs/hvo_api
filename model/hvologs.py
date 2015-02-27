@@ -59,3 +59,15 @@ class VolcLink(db.Model):
         self.VolcNameID = volcname
         self.obsid      = obs
         self.volcano_id = volcid
+
+class KeywordLink(db.Model):
+    __tablename__ = 'tbllinkobstoobskeywordid'
+    __bind_key__  = 'hvologs'
+
+    linkobstoobskeywordid = db.Column(db.Integer, unique=True)
+    obsid                 = db.Column(db.Integer, primary_key=True)
+    obskeywordid          = db.Column(db.Integer, primary_key=True)
+
+    def __init__(self, obs):
+        self.obsid        = obs
+        self.obskeywordid = 23 # Earthquake
