@@ -77,3 +77,6 @@ def clean_input(arg):
     for key,val in arg.iteritems():
         arg[key] = val.strip() if isinstance(val, basestring) else val
     return arg
+
+def str_to_date(s):
+    return mktime(datetime.strptime(s, "%Y-%m-%d %H:%M:%S.%f").timetuple())

@@ -61,6 +61,9 @@ class LogsAPI(Resource):
             if item:
                 lf.debug('Updating item with subject: %s' % arg['subject'])
                 item.obstext = arg['text']
+                user         = cname.User.query.filter_by(email = arg['user']).first()
+                if user and item.userID != user.id:
+                    item.userID = user.id
                 db.session.commit()
             else:
                 pdate = datetime.strptime(arg['postdate'], '%Y-%m-%d %H:%M')
@@ -71,8 +74,8 @@ class LogsAPI(Resource):
                 else:
                     item = cname.Post(0, pdate, odate, arg['subject'], arg['text'], '')
                 s = ('Attempting to insert log entry for observatory=%s, postdate=%s, obsdate=%s, user=%s, '
-                     'subject=%s, text=%s')
-                lf.debug(s % (observatory, arg['postdate'], arg['obsdate'], arg['user'], arg['subject'], arg['text']))
+                     'subject=%s')
+                lf.debug(s % (observatory, arg['postdate'], arg['obsdate'], arg['user'], arg['subject']))
                 db.session.add(item)
                 db.session.commit()
 
@@ -106,7 +109,7 @@ class LogsAPI(Resource):
                 db.session.add(igitem)
                 db.session.commit()
                 lf.debug('Item added')
-                
+
             return { 'status': 'ok' }, 201
         except Exception:
             lf.debug(traceback.format_exc())
