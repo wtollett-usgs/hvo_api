@@ -34,6 +34,7 @@ class RSAMAPI(Resource):
 
         args       = self.reqparse.parse_args()
         start, end = create_date_from_input(args['starttime'], args['endtime'])
+        tz         = (args['timezone'] == 'hst')
         output     = {}
         count      = 0
         for channel in channels:
@@ -41,7 +42,7 @@ class RSAMAPI(Resource):
             orderby      = []
             cname        = getattr(rsam, channel.upper())
 
-            queryclauses.append(cname.timestamp.between(date_to_j2k(start), date_to_j2k(end)))
+            queryclauses.append(cname.timestamp.between(date_to_j2k(start, tz), date_to_j2k(end, tz)))
             orderby.append(cname.timestamp.asc())
 
             if args['downsample'] == 'none':
@@ -62,14 +63,14 @@ class RSAMAPI(Resource):
                     s += ' LIMIT ' + str(MAX_LINES['RSAM'])
                 except KeyError:
                     pass
-                data = db.session.execute(text(s), params=dict(st=date_to_j2k(start), et=date_to_j2k(end),
+                data = db.session.execute(text(s), params=dict(st=date_to_j2k(start, tz), et=date_to_j2k(end, tz),
                                             dsint=interval)).fetchall()
             elif args['downsample'] == 'mean':
                 q_items  = []
                 interval = args['dsint']
                 q_items.append(func.min(cname.timestamp).label('timestamp'))
                 q_items.append(func.avg(cname.rsam).label('rsam'))
-                q_items.append(((cname.timestamp)-date_to_j2k(start)).self_group().op('div')(interval).label('intNum'))
+                q_items.append(((cname.timestamp)-date_to_j2k(start, tz)).self_group().op('div')(interval).label('intNum'))
                 q = db.session.query(*q_items).filter(*queryclauses).order_by(*orderby).group_by('intNum')
                 try:
                     q = q.limit(MAX_LINES['RSAM'])
@@ -81,7 +82,7 @@ class RSAMAPI(Resource):
             Date            = j2k_to_date
             List            = output[channel].append
             for d in data:
-                List({ 'date': Date(d.timestamp).strftime('%Y-%m-%d %H:%M:%S.%f'), 'rsam': d.rsam })
+                List({ 'date': Date(d.timestamp, tz).strftime('%Y-%m-%d %H:%M:%S.%f'), 'rsam': d.rsam })
 
             count += len(data)
         return { 'nr': count,
