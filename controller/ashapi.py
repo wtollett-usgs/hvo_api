@@ -15,7 +15,7 @@ class AshAPI(Resource):
         self.reqparse.add_argument('op', type = str, required = False)
         self.reqparse.add_argument('starttime', type = str, required = False)
         self.reqparse.add_argument('endtime', type = str, required = False, default='now')
-        self.reqparse.add_argument('tz', type = str, required = False, default = 'HST')
+        self.reqparse.add_argument('timezone', type = str, required = False, default = 'hst')
         super(AshAPI, self).__init__()
 
     def get(self):
@@ -33,15 +33,16 @@ class AshAPI(Resource):
         else:
             starttime = args['starttime']
             endtime   = args['endtime']
-            sd,ed     = create_date_from_input(starttime, endtime)
-            jsd       = date_to_j2k(sd, (args['tz'] == 'HST'))
-            jed       = date_to_j2k(ed, (args['tz'] == 'HST'))
+            timezone  = (args['timezone'].lower() == 'hst')
+            sd,ed     = create_date_from_input(starttime, endtime, tz)
+            jsd       = date_to_j2k(sd, tz)
+            jed       = date_to_j2k(ed, tz)
             data      = HMM.query.filter(HMM.timestamp.between(jsd, jed)).order_by(HMM.timestamp.desc()).all()
             output    = []
             Date      = j2k_to_date
             List      = output.append
             for d in data:
-                List({ 'date': Date(d.timestamp, (args['tz'] == 'HST')).strftime("%Y-%m-%d %H:%M:%S.%f"),
+                List({ 'date': Date(d.timestamp, tz).strftime("%Y-%m-%d %H:%M:%S.%f"),
                        'accumrate': d.accumrate,
                        'percentjuvenile': d.percentjuvenile })
             return { 'nr': len(data),
@@ -82,7 +83,7 @@ class AshAPI(Resource):
                                 'note': 'Will also accept things like -6m for last 6 months.',
                                 'format': 'yyyy[MMdd[hhmm]]' }
         params['endtime'] = { 'type': 'string', 'required': 'no', 'format': 'yyyy[MMdd[hhmm]]', 'default': 'now' }
-        params['tz'] = { 'type': 'string', 'required': 'no', 'default': 'HST' }
+        params['timezone'] = { 'type': 'string', 'required': 'no', 'default': 'hst' }
         params['op'] = { 'type': 'string', 'required': 'no', 'options': 'time',
                          'note': 'Returns datetime for last record in the database. Other paramaters not required.'}
         return params
