@@ -16,7 +16,7 @@ class MgOSystematicsAPI(Resource):
         self.reqparse.add_argument('channel', type = str, required = False)
         self.reqparse.add_argument('starttime', type = str, required = False)
         self.reqparse.add_argument('endtime', type = str, required = False, default='now')
-        self.reqparse.add_argument('tz', type = str, required = False, default='HST')
+        self.reqparse.add_argument('timezone', type = str, required = False, default = 'hst')
         super(MgOSystematicsAPI, self).__init__()
 
     def get(self):
@@ -28,25 +28,26 @@ class MgOSystematicsAPI(Resource):
             json_settings['indent'] = None
 
         args = self.reqparse.parse_args()
+        tz   = (args['timezone'].lower() == 'hst')
         if 'op' in args and args['op'] == 'time':
             kerz = db.session.query(func.max(mgosystematics.KERZ.timestamp)).one()[0]
             hmm  = db.session.query(func.max(mgosystematics.HMM.timestamp)).one()[0]
-            return { 'KERZ': j2k_to_date(kerz, True).strftime("%Y-%m-%d %H:%M:%S.%f") if kerz else '',
-                     'HMM': j2k_to_date(hmm, True).strftime("%Y-%m-%d %H:%M:%S.%f") if hmm else ''}, 200
+            return { 'KERZ': j2k_to_date(kerz, tz).strftime("%Y-%m-%d %H:%M:%S.%f") if kerz else '',
+                     'HMM': j2k_to_date(hmm, tz).strftime("%Y-%m-%d %H:%M:%S.%f") if hmm else ''}, 200
         elif 'op' in args and args['op'] == 'lastfo':
             t    = mgosystematics.KERZ
             kerz = db.session.query(func.max(t.timestamp)).filter(t.olv_fo_meas != None).one()[0]
             t    = mgosystematics.HMM
             hmm  = db.session.query(func.max(t.timestamp)).filter(t.olv_fo_meas != None).one()[0]
-            return { 'KERZ': j2k_to_date(kerz, True).strftime("%Y-%m-%d %H:%M:%S.%f") if kerz else '',
-                     'HMM': j2k_to_date(hmm, True).strftime("%Y-%m-%d %H:%M:%S.%f") if hmm else ''}, 200
+            return { 'KERZ': j2k_to_date(kerz, tz).strftime("%Y-%m-%d %H:%M:%S.%f") if kerz else '',
+                     'HMM': j2k_to_date(hmm, tz).strftime("%Y-%m-%d %H:%M:%S.%f") if hmm else ''}, 200
         else:
             channels  = args['channel'].split(',')
             starttime = args['starttime']
             endtime   = args['endtime']
-            sd,ed     = create_date_from_input(starttime, endtime)
-            jsd       = date_to_j2k(sd, (args['tz'] == 'HST'))
-            jed       = date_to_j2k(ed, (args['tz'] == 'HST'))
+            sd,ed     = create_date_from_input(starttime, endtime, tz)
+            jsd       = date_to_j2k(sd, tz)
+            jed       = date_to_j2k(ed, tz)
             output    = {}
             count     = 0
             for channel in channels:
@@ -58,7 +59,7 @@ class MgOSystematicsAPI(Resource):
                 List = out.append
                 count += len(data)
                 for d in data:
-                    List({ 'date': Date(d.timestamp, (args['tz'] == 'HST')).strftime('%Y-%m-%d %H:%M:%S.%f'),
+                    List({ 'date': Date(d.timestamp, tz).strftime('%Y-%m-%d %H:%M:%S.%f'),
                             'wr_mgo_wt':        d.wr_mgo_wt,
                             'gls_mgo_wt':       d.gls_mgo_wt,
                             'gls_mgo_tempcorr': d.gls_mgo_tempcorr,
@@ -134,7 +135,7 @@ class MgOSystematicsAPI(Resource):
                                 'note': 'Will also accept things like -6m for last 6 months.',
                                 'format': 'yyyy[MMdd[hhmm]]' }
         params['endtime'] = { 'type': 'string', 'required': 'no', 'format': 'yyyy[MMdd[hhmm]]', 'default': 'now' }
-        params['tz'] = { 'type': 'string', 'required': 'no', 'default': 'HST' }
+        params['timezone'] = { 'type': 'string', 'required': 'no', 'default': 'hst' }
         params['op'] = { 'type': 'string', 'required': 'no', 'options': 'time',
                          'note': 'Returns datetime for last record in the database. Other parameters not required.'}
         return params
