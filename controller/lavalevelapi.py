@@ -23,7 +23,8 @@ class LavaLevelAPI(Resource):
             json_settings['indent'] = None
 
         args      = self.reqparse.parse_args()
-        start,end = create_date_from_input(args['starttime'], args['endtime'])
+        tz        = (args['timezone'].lower() == 'hst')
+        start,end = create_date_from_input(args['starttime'], args['endtime'], tz)
         w_items   = [LavaLevel.timestamp.between(date_to_j2k(start), date_to_j2k(end)), LavaLevel.rid == args['rank']]
         data      = LavaLevel.query.filter(*w_items).all()
 
@@ -31,7 +32,7 @@ class LavaLevelAPI(Resource):
         l      = output.append
         jtod   = j2k_to_date
         for d in data:
-            l({'date': jtod(d.timestamp).strftime('%Y-%m-%d %H:%M:%S.%f'), 'rank': d.rank.name, 'lavalevel': d.lavalevel})
+            l({'date': jtod(d.timestamp, tz).strftime('%Y-%m-%d %H:%M:%S.%f'), 'rank': d.rank.name, 'lavalevel': d.lavalevel})
         return { 'nr': len(data),
                  'records': output }, 200
 
