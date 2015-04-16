@@ -49,7 +49,7 @@ class TiltAPI(Resource):
         tz = (args['timezone'] == 'hst')
 
         # Start by getting all the data
-        start, end = create_date_from_input(args['starttime'], args['endtime'])
+        start, end = create_date_from_input(args['starttime'], args['endtime'], tz)
         raw_output = {}
         count      = 0
 

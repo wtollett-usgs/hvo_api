@@ -40,8 +40,8 @@ class FlyspecAPI(Resource):
         if len(unknown) > 0:
             return { 'Error': 'unknown series: %s' % ','.join(unknown) }
 
-        tz         = (args['timezone'] == 'hst')
-        start, end = create_date_from_input(args['starttime'], args['endtime'])
+        tz         = (args['timezone'].lower() == 'hst')
+        start, end = create_date_from_input(args['starttime'], args['endtime'], tz)
         output     = {}
         count      = 0
 

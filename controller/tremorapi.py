@@ -17,6 +17,7 @@ class TremorAPI(Resource):
         self.reqparse.add_argument('endtime', type = str, required = True)
         self.reqparse.add_argument('retvals', type = str, required = False, default = 'all')
         self.reqparse.add_argument('region', type = str, required = False, default = 'all')
+        self.reqparse.add_argument('timezone', type = str, required = False, default = 'hst')
         super(TremorAPI, self).__init__()
 
     def get(self):
@@ -30,10 +31,11 @@ class TremorAPI(Resource):
         args      = self.reqparse.parse_args()
         starttime = args['starttime']
         endtime   = args['endtime']
+        tz        = (args['timezone'].lower() == 'hst')
         methodid  = args['methodid']
         region    = args['region'].upper()
         retvals   = args['retvals'].lower()
-        sd,ed     = create_date_from_input(starttime, endtime)
+        sd,ed     = create_date_from_input(starttime, endtime, tz)
         data      = []
         output    = []
         List      = output.append
@@ -115,4 +117,5 @@ class TremorAPI(Resource):
         params['region']   = { 'type': 'string', 'required': 'no', 'default': 'all'}
         params['retvals']  = { 'type': 'string', 'required': 'no', 'default': 'all',
                                'options': ['all', 'dates', 'stations']}
+        params['timezone'] = { 'type': 'string', 'required': 'no', 'default': 'hst'}
         return params
