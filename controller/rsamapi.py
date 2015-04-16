@@ -33,8 +33,8 @@ class RSAMAPI(Resource):
             return { 'Error': 'unknown channel' }
 
         args       = self.reqparse.parse_args()
-        start, end = create_date_from_input(args['starttime'], args['endtime'])
         tz         = (args['timezone'] == 'hst')
+        start, end = create_date_from_input(args['starttime'], args['endtime'], tz)
         output     = {}
         count      = 0
         for channel in channels:

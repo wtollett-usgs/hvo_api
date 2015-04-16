@@ -30,7 +30,7 @@ def j2k_to_date(j2k, hst=False):
     else:
         return datetime.fromtimestamp(j2k + gmt_j2koffset)
 
-def create_date_from_input(start, end):
+def create_date_from_input(start, end, hst):
     if start.startswith('-'):
         s = create_relative_date(start)
     else:
@@ -42,7 +42,7 @@ def create_date_from_input(start, end):
             start += '00000'
         s = datetime.strptime(start, "%Y%m%d%H%M%S%f")
     if end == 'now':
-        e = datetime.now()
+        e = datetime.now() if tz else datetime.utcnow()
     else:
         if len(end) == 4:
             end += '1231235959999'
