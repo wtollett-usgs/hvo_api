@@ -129,8 +129,8 @@ class TiltAPI(Resource):
                     s += ' LIMIT ' + str(MAX_LINES['TILT'])
                 except KeyError:
                     pass
-                data = db.session.execute(text(s), params=dict(dsint=interval, st=date_to_j2k(start),
-                                            et=date_to_j2k(end), rid=args['rank'])).fetchall()
+                data = db.session.execute(text(s), params=dict(dsint=interval, st=date_to_j2k(start, tz),
+                                            et=date_to_j2k(end, tz), rid=args['rank'])).fetchall()
                 raw_output[channel] = map(self.create_initial_output, data)
                 for d in raw_output[channel]:
                     d['date'] = j2k_to_date(d['date'], tz).strftime('%Y-%m-%d %H:%M:%S.%f')
