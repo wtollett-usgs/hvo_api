@@ -108,7 +108,32 @@ class TiltAPI(Resource):
                 for d in raw_output[channel]:
                     d['date'] = j2k_to_date(d['date'], tz).strftime('%Y-%m-%d %H:%M:%S.%f')
             elif args['downsample'] == 'decimate':
-                pass
+                interval = int(args['dsint'])
+                dbname   = 'v3_hvo_deformation_tilt$tilt'
+                s        = "SELECT * FROM(SELECT fullquery.*, @row := @row+1 AS rownum "\
+                            "FROM (SELECT j2ksec as timestamp, c.rid, c.name, COS(RADIANS(b.azimuth)) * "\
+                            "(xTilt * cxTilt + dxTilt) + SIN(RADIANS(b.azimuth)) * (yTilt * cyTilt + "\
+                            "dyTilt) as east, (-SIN(RADIANS(b.azimuth))) * (xTilt * cxTilt + dxTilt) + "\
+                            "COS(RADIANS(b.azimuth)) * (yTilt * cyTilt + dyTilt) as north, holeTemp * "\
+                            "cHoleTemp + dHoleTemp as holeTemp, boxTemp * cboxTemp + dboxTemp as boxTemp, "\
+                            "instVolt * cinstVolt + dinstVolt as instVolt, rainfall * crainfall + "\
+                            "drainfall as rainfall FROM " + dbname + "." + cname.__tablename__ + " a INNER "\
+                            "JOIN " + dbname + ".translations b on a.tid = b.tid INNER JOIN " + dbname + \
+                            ".ranks c ON a.rid = c.rid WHERE j2ksec BETWEEN :st AND :et "
+                if args['rank'] != 0:
+                    s += "AND c.rid = :rid ORDER BY j2ksec ASC"
+                else:
+                    s += "ORDER BY j2ksec ASC AND a.rid DESC"
+                s += ") fullquery, (SELECT @row:=0) r) ranked WHERE rownum % :dsint = 1"
+                try:
+                    s += ' LIMIT ' + str(MAX_LINES['TILT'])
+                except KeyError:
+                    pass
+                data = db.session.execute(text(s), params=dict(dsint=interval, st=date_to_j2k(start),
+                                            et=date_to_j2k(end), rid=args['rank'])).fetchall()
+                raw_output[channel] = map(self.create_initial_output, data)
+                for d in raw_output[channel]:
+                    d['date'] = j2k_to_date(d['date'], tz).strftime('%Y-%m-%d %H:%M:%S.%f')
             elif args['downsample'] == 'mean':
                 pass
 
@@ -129,7 +154,7 @@ class TiltAPI(Resource):
             count += len(data)
 
         # Now go through and compute things like radial, tangential, azimuth, magnitude if requested by the user
-        if set(args['series'].split(',')).intersection(['all', 'radial', 'tangential', 'magnitude', 'azimuth']):
+        if set(args['series'].split(',')).intersection(['all', 'radial', 'tangential', 'magnitude', 'azimuth', 'east', 'north']):
             tc = tilt.TiltChannel
             for channel in channels:
                 data = raw_output[channel]
