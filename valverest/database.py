@@ -6,10 +6,10 @@ db = SQLAlchemy()
 # MgO Systematics and HVO Logs and Tilt
 db2 = SQLAlchemy()
 
-# Olivine Incompatible Elements and CVO Logs and Flyspec
+# Olivine Incompatible Elements and Flyspec
 db3 = SQLAlchemy()
 
-# Magmatic Sulfur and AVO Logs
+# Magmatic Sulfur
 db4 = SQLAlchemy()
 
 # RSAM and LavaLevel
