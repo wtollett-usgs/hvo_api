@@ -4,8 +4,8 @@ from flask.ext.restful import Resource, reqparse
 from flask.ext.restful.representations.json import settings as json_settings
 from json import loads as jsonload
 from logging import getLogger
-from model import hvologs, cvologs, avologs
-from valverest.database import db2 as hvodb, db3 as cvodb, db4 as avodb
+from model import hvologs
+from valverest.database import db2 as hvodb
 
 import traceback
 
@@ -13,7 +13,7 @@ class LogsAPI(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('op', type = str, required = False, default = 'time')
-        self.reqparse.add_argument('observatory', type = str, required = False, default = 'hvo')
+        self.reqparse.add_argument('num', type = int, required = False, default = 20)
         super(LogsAPI, self).__init__()
 
     def get(self):
@@ -24,37 +24,27 @@ class LogsAPI(Resource):
         if (not current_app.debug) and (json_settings and json_settings['indent']):
             json_settings['indent'] = None
 
-        args = self.reqparse.parse_args()
-        if 'op' in args and args['op'] == 'time':
-            obs = args['observatory'].lower()
-            if obs == 'avo':
-                cname = avologs
-                db    = avodb
-            elif obs == 'cvo':
-                cname = cvologs
-                db    = cvodb
-            elif obs == 'hvo':
-                cname = hvologs
-                db    = hvodb
+        output = []
+        args   = self.reqparse.parse_args()
+        cname  = hvologs
+        db     = hvodb
 
+        if 'op' in args and args['op'] == 'time':
             post = cname.Post.query.order_by(cname.Post.observtime.desc()).first()
             return { 'id': post.obsID, 'observtime': post.observtime.strftime("%Y-%m-%d %H:%M:%S"),
                      'obsdate': post.obsdate.strftime("%Y-%m-%d %H:%M:%S") }, 200
+        else:
+            posts  = cname.Post.query.order_by(cname.Post.sortdate.desc()).limit(args['num']).all()
+            output = map(self.create_data_map, posts)
+            return { 'nr': len(posts), 'posts': output }, 200
 
     def post(self):
         lf = getLogger('file')
         try:
             arg         = jsonload(request.data)
             observatory = arg['db'].lower()
-            if observatory == 'hvo':
-                cname = hvologs
-                db    = hvodb
-            elif observatory == 'cvo':
-                cname = cvologs
-                db    = cvodb
-            elif observatory == 'avo':
-                cname = avologs
-                db    = avodb
+            cname       = hvologs
+            db          = hvodb
 
             # Is this an edit of a previous item?
             item = cname.Post.query.filter_by(subject = arg['subject']).first()
@@ -73,9 +63,8 @@ class LogsAPI(Resource):
                     item = cname.Post(user.id, pdate, odate, arg['subject'], arg['text'], user.username)
                 else:
                     item = cname.Post(0, pdate, odate, arg['subject'], arg['text'], '')
-                s = ('Attempting to insert log entry for observatory=%s, postdate=%s, obsdate=%s, user=%s, '
-                     'subject=%s')
-                lf.debug(s % (observatory, arg['postdate'], arg['obsdate'], arg['user'], arg['subject']))
+                s = 'Attempting to insert log entry for postdate=%s, obsdate=%s, user=%s, subject=%s'
+                lf.debug(s % (arg['postdate'], arg['obsdate'], arg['user'], arg['subject']))
                 db.session.add(item)
                 db.session.commit()
 
@@ -116,13 +105,24 @@ class LogsAPI(Resource):
             return { 'status': 'error' }, 400
 
     @staticmethod
+    def create_data_map(data):
+        item = {}
+        item['title'] = data.subject
+        item['text'] = data.obstext
+        item['user'] = data.user.username
+        item['postdate'] = data.observtime.strftime('%Y-%m-%d %H:%M:%S.%f')
+        item['sortdate'] = data.sortdate.strftime('%Y-%m-%d %H:%M:%S.%f')
+
+        return item
+
+    @staticmethod
     def create_param_string():
         if not current_app.debug:
             json_settings['indent']    = 4
             json_settings['sort_keys'] = True
 
         params = {}
-        params['observatory'] = { 'type': 'string', 'required': 'no', 'options': 'avo, cvo, hvo', 'default': 'hvo' }
-        params['op'] = { 'type': 'string', 'required': 'no', 'options': 'time',
+        params['op'] = { 'type': 'string', 'required': 'no', 'options': 'time, posts',
                          'note': 'Returns datetime for last record in the database. Other parameters not required.'}
+        params['num'] = { 'type': 'int', 'required': 'no', 'default': 20, 'note': 'Number of log entries to return'}
         return params
