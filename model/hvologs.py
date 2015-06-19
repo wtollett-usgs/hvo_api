@@ -1,3 +1,4 @@
+from sqlalchemy.ext.declarative import declared_attr
 from valverest.database import db2 as db
 
 class Post(db.Model):
@@ -14,11 +15,15 @@ class Post(db.Model):
     observer   = db.Column(db.Text)
     sortdate   = db.Column(db.DateTime)
 
+    @declared_attr
+    def user(self):
+        return db.relationship('User', uselist=False)
+
     def __init__(self, uid, postdt, obsdt, subject, text, observer):
         self.userID     = uid
         self.obstypeID  = 4 # Seismology
-        self.observtime = postdt
-        self.obsdate    = obsdt
+        self.observtime = obsdt
+        self.obsdate    = postdt
         self.sortdate   = obsdt
         self.subject    = subject
         self.obstext    = text
@@ -28,7 +33,7 @@ class User(db.Model):
     __tablename__ = 'tblusers'
     __bind_key__  = 'hvologs'
 
-    id       = db.Column(db.Integer, primary_key=True)
+    id       = db.Column(db.Integer, db.ForeignKey(Post.userID), primary_key=True)
     username = db.Column(db.String(20), unique=True)
     email    = db.Column(db.String(200))
 
