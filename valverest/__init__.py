@@ -3,6 +3,7 @@ from flask.ext.restful import Api
 from flask.ext.sqlalchemy import SQLAlchemy
 from controller.ashapi import AshAPI
 from controller.edxrfapi import EDXRFAPI
+from controller.fileapi import FileAPI
 from controller.flyspecapi import FlyspecAPI
 from controller.incompatiblesapi import IncompatiblesAPI
 from controller.mgosystematicsapi import MgOSystematicsAPI
@@ -31,6 +32,7 @@ def create_app(*args, **kwargs):
     api.add_resource(EDXRFAPI, '/api/edxrf', endpoint = 'edxrf')
     api.add_resource(FlyspecAPI, '/api/flyspec', endpoint = 'flyspec')
     api.add_resource(IncompatiblesAPI, '/api/incompatibles', endpoint = 'incompatibles')
+    api.add_resource(FileAPI, '/api/file', endpoint = 'file')
     api.add_resource(LavaLevelAPI, '/api/lavalevel', endpoint = 'lavalevel')
     api.add_resource(LogsAPI, '/api/logs', endpoint = 'logs')
     api.add_resource(MagmaticSulfurAPI, '/api/magmaticsulfur', endpoint = 'magmaticsulfur')
