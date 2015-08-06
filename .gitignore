@@ -3,3 +3,4 @@ __pycache_/
 *.py[cod]
 .DS_Store
 error_log
+static/

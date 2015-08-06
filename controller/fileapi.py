@@ -1,7 +1,10 @@
 from flask import request, current_app, send_from_directory
 from flask.ext.restful import Resource, reqparse
+from flask.ext.restful.representations.json import settings as json_settings
 from base64 import b64encode
 from json import loads as jsonloads
+
+import hashlib
 
 class FileAPI(Resource):
     def __init__(self):
@@ -19,15 +22,24 @@ class FileAPI(Resource):
             json_settings['indent'] = None
 
         args   = self.reqparse.parse_args()
-        if 'type' in args and args['type'] == 'static':
+        if args['type'] == 'static':
             with open('%s/%s' % (current_app.config['STATIC_DIR'], args['name'])) as file:
                 str = jsonloads(file.read())
             return str, 200
-        else:
-            image = "/lamp/cams/HTcam/composites/archive/HTcamLakeLevel.jpg"
+        elif args['type'] == 'cam':
+            image = "/lamp/cams/%s/images/M.jpg" % args['name']
             with open(image, "rb") as file:
                 str = b64encode(file.read())
             return { 'img': str }, 200
+        elif args['type'] == 'hash':
+            blocksize = 65536
+            hasher = hashlib.sha1()
+            with open('%s/%s' % (current_app.config['STATIC_DIR'], args['name'])) as file:
+                buf = file.read(blocksize)
+                while len(buf) > 0:
+                    hasher.update(buf)
+                    buf = file.read(blocksize)
+            return { 'hash': hasher.hexdigest() }, 200
 
     @staticmethod
     def create_param_string():
@@ -36,7 +48,7 @@ class FileAPI(Resource):
             json_settings['sort_keys'] = True
 
         params = {}
-        params['type'] = { 'type': 'string', 'required': 'no', 'options': 'static, img',
+        params['type'] = { 'type': 'string', 'required': 'no', 'options': 'static, hash, img, cam',
                          'note': 'What type of file to return.'}
         params['name'] = { 'type': 'string', 'required': 'yes', 'note': 'Name of file to return'}
         return params
