@@ -10,6 +10,7 @@ class Post(db.Model):
     obstypeID  = db.Column(db.Integer)
     observtime = db.Column(db.DateTime)
     subject    = db.Column(db.String(255))
+    parentID   = db.Column(db.String(255))
     obstext    = db.Column(db.Text)
     obsdate    = db.Column(db.DateTime)
     observer   = db.Column(db.Text)
@@ -24,6 +25,10 @@ class Post(db.Model):
         self.subject    = subject
         self.obstext    = text
         self.observer   = observer
+
+    @declared_attr
+    def user(self):
+        return db.relationship('LogUser', uselist=False)
 
 class Volcano(db.Model):
     __tablename__ = 'volcano'
@@ -57,3 +62,11 @@ class KeywordLink(db.Model):
     def __init__(self, obs):
         self.obsid        = obs
         self.obskeywordid = 23 # Earthquake
+
+class LogUser(db.Model):
+    __tablename__ = 'user'
+    __bind_key__  = 'hvologsauth'
+
+    user_id = db.Column(db.Integer, db.ForeignKey('tblobsinfo.userID'), primary_key=True)
+    first   = db.Column(db.String)
+    last    = db.Column(db.String)
