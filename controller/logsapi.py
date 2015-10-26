@@ -38,7 +38,7 @@ class LogsAPI(Resource):
             return { 'id': post.obsID, 'observtime': post.observtime.strftime("%Y-%m-%d %H:%M:%S"),
                      'obsdate': post.obsdate.strftime("%Y-%m-%d %H:%M:%S") }, 200
         else:
-            posts  = cname.Post.query.filter(cname.Post.parentID==None).order_by(cname.Post.sortdate.desc()).limit(args['num']).all()
+            posts  = cname.Post.query.filter(cname.Post.parentID==None, cname.Post.published=='yes').order_by(cname.Post.sortdate.desc()).limit(args['num']).all()
             output = map(self.create_data_map, posts)
             return { 'nr': len(posts), 'posts': output }, 200
 
@@ -80,7 +80,7 @@ class LogsAPI(Resource):
                           'appname': 'hvoapi',
                           'subject': arg['subject'],
                           'body': arg['text'],
-                          'post_type': 'Seismology'}
+                          'post_type': 'Seismic Daily Update'}
 
                 #Optional Stuff
                 values['obsdate'] = hidt.strftime('%Y-%m-%d %H:%M:%S')
@@ -100,7 +100,7 @@ class LogsAPI(Resource):
     def create_data_map(data):
         item = {}
         item['title'] = data.subject
-        item['text'] = data.obstext
+        item['text'] = data.obstext.replace("\n", "<br>")
         item['user'] = '%s %s' % (data.user.first, data.user.last)
         item['postdate'] = data.observtime.strftime('%Y-%m-%d %H:%M:%S.%f')
         item['sortdate'] = data.sortdate.strftime('%Y-%m-%d %H:%M:%S.%f')
