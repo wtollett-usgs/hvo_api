@@ -15,16 +15,7 @@ class Post(db.Model):
     obsdate    = db.Column(db.DateTime)
     observer   = db.Column(db.Text)
     sortdate   = db.Column(db.DateTime)
-
-    def __init__(self, uid, postdt, obsdt, subject, text, observer):
-        self.userID     = uid
-        self.obstypeID  = 4 # Seismology
-        self.observtime = postdt
-        self.obsdate    = obsdt
-        self.sortdate   = postdt
-        self.subject    = subject
-        self.obstext    = text
-        self.observer   = observer
+    published  = db.Column(db.String)
 
     @declared_attr
     def user(self):
@@ -46,11 +37,6 @@ class VolcLink(db.Model):
     obsid           = db.Column(db.Integer, primary_key=True)
     volcano_id      = db.Column(db.String(25))
 
-    def __init__(self, volcname, obs, volcid):
-        self.VolcNameID = volcname
-        self.obsid      = obs
-        self.volcano_id = volcid
-
 class KeywordLink(db.Model):
     __tablename__ = 'tbllinkobstoobskeywordid'
     __bind_key__  = 'hvologs'
@@ -58,10 +44,6 @@ class KeywordLink(db.Model):
     linkobstoobskeywordid = db.Column(db.Integer, unique=True)
     obsid                 = db.Column(db.Integer, primary_key=True)
     obskeywordid          = db.Column(db.Integer, primary_key=True)
-
-    def __init__(self, obs):
-        self.obsid        = obs
-        self.obskeywordid = 23 # Earthquake
 
 class LogUser(db.Model):
     __tablename__ = 'user'

@@ -3,6 +3,7 @@ from flask.ext.restful import Resource, reqparse
 from flask.ext.restful.representations.json import settings as json_settings
 from base64 import b64encode
 from json import loads as jsonloads
+from os.path import isfile
 
 import hashlib
 
@@ -27,7 +28,10 @@ class FileAPI(Resource):
                 str = jsonloads(file.read())
             return str, 200
         elif args['type'] == 'cam':
-            image = "/lamp/cams/%s/images/M.jpg" % args['name']
+            if isfile("/lamp/cams/%s/images/M.jpg" % args['name']):
+                image = "/lamp/cams/%s/images/M.jpg" % args['name']
+            elif isfile("/lamp/cams/%s/images/PAN.jpg" % args['name']):
+                image = "/lamp/cams/%s/images/PAN.jpg" % args['name']
             with open(image, "rb") as file:
                 str = b64encode(file.read())
             return { 'img': str }, 200
