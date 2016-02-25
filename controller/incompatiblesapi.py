@@ -81,13 +81,13 @@ class IncompatiblesAPI(Resource):
                     lf.debug('Updating item for j2ksec: ' + str(d))
                     item.wr_k2o_tio2    = '%.3f' % float(arg['wr_k2o_tio2']) if arg['wr_k2o_tio2'] != '' else None
                     item.gls_k2o_tio2   = '%.3f' % float(arg['gls_k2o_tio2']) if arg['gls_k2o_tio2'] != '' else None
-                    item.wr_cao_al2o3   = '%.3f' % float(arg['wr_cao_al2o3']) if arg[''] != 'wr_cao_al2o3' else None
-                    item.wr_cao_tio2    = '%.3f' % float(arg['wr_cao_tio2']) if arg[''] != 'wr_cao_tio2' else None
-                    item.wr_la_yb_inaa  = '%.3f' % float(arg['wr_la_yb_inaa']) if arg[''] != 'wr_la_yb_inaa' else None
-                    item.wr_la_yb_icpms = '%.3f' % float(arg['wr_la_yb_icpms']) if arg[''] != 'wr_la_yb_icpms' else None
-                    item.wr_zr_y_wdx    = '%.3f' % float(arg['wr_zr_y_wdx']) if arg[''] != 'wr_zr_y_wdx' else None
-                    item.wr_zr_y_edx    = '%.3f' % float(arg['wr_zr_y_edx']) if arg[''] != 'wr_zr_y_edx' else None
-                    item.wr_sr_edx      = '%.3f' % float(arg['wr_sr_edx']) if arg[''] != 'wr_sr_edx' else None
+                    item.wr_cao_al2o3   = '%.3f' % float(arg['wr_cao_al2o3']) if arg['wr_cao_al2o3'] != '' else None
+                    item.wr_cao_tio2    = '%.3f' % float(arg['wr_cao_tio2']) if arg['wr_cao_tio2'] != '' else None
+                    item.wr_la_yb_inaa  = '%.3f' % float(arg['wr_la_yb_inaa']) if arg['wr_la_yb_inaa'] != '' else None
+                    item.wr_la_yb_icpms = '%.3f' % float(arg['wr_la_yb_icpms']) if arg['wr_la_yb_icpms'] != '' else None
+                    item.wr_zr_y_wdx    = '%.3f' % float(arg['wr_zr_y_wdx']) if arg['wr_zr_y_wdx'] != '' else None
+                    item.wr_zr_y_edx    = '%.3f' % float(arg['wr_zr_y_edx']) if arg['wr_zr_y_edx'] != '' else None
+                    item.wr_sr_edx      = '%.3f' % float(arg['wr_sr_edx']) if arg['wr_sr_edx'] != '' else None
                     item.sid            = arg['sid'] if arg['sid'] != '' else None
                 else:
                     item = cname(time=arg['date'], wr_k2o_tio2=arg['wr_k2o_tio2'], gls_k2o_tio2=arg['gls_k2o_tio2'],
