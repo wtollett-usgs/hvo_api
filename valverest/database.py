@@ -3,7 +3,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 # Ash and EDXRF and Tremor
 db = SQLAlchemy()
 
-# MgO Systematics and HVO Logs and Tilt
+# MgO Systematics and Tilt
 db2 = SQLAlchemy()
 
 # Olivine Incompatible Elements and Flyspec
