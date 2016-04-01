@@ -4,8 +4,6 @@ from flask.ext.restful import Resource, reqparse
 from flask.ext.restful.representations.json import settings as json_settings
 from json import loads as jsonload
 from logging import getLogger
-from model import hvologs
-from valverest.database import db2 as hvodb
 
 import HTMLParser
 import pytz
@@ -16,7 +14,6 @@ import traceback
 class LogsAPI(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('op', type = str, required = False, default = 'time')
         self.reqparse.add_argument('num', type = int, required = False, default = 20)
         super(LogsAPI, self).__init__()
 
@@ -28,19 +25,16 @@ class LogsAPI(Resource):
         if (not current_app.debug) and (json_settings and json_settings['indent']):
             json_settings['indent'] = None
 
-        output = []
-        args   = self.reqparse.parse_args()
-        cname  = hvologs
-        db     = hvodb
+        url = "https://hvointernal.wr.usgs.gov/hvo_logs/api/getposts"
+        headers = {'Authorization': ***REMOVED***}
 
-        if 'op' in args and args['op'] == 'time':
-            post = cname.Post.query.order_by(cname.Post.observtime.desc()).first()
-            return { 'id': post.obsID, 'observtime': post.observtime.strftime("%Y-%m-%d %H:%M:%S"),
-                     'obsdate': post.obsdate.strftime("%Y-%m-%d %H:%M:%S") }, 200
-        else:
-            posts  = cname.Post.query.filter(cname.Post.parentID==None, cname.Post.published=='yes').order_by(cname.Post.sortdate.desc()).limit(args['num']).all()
-            output = map(self.create_data_map, posts)
-            return { 'nr': len(posts), 'posts': output }, 200
+        # Get data
+        req      = urllib2.Request(url, '', headers)
+        response = urllib2.urlopen(req)
+        items    = jsonload(response.read())
+        output   = map(self.create_data_map, items.iteritems())
+
+        return { 'posts': output }, 200
 
     def post(self):
         lf = getLogger('file')
@@ -98,12 +92,18 @@ class LogsAPI(Resource):
 
     @staticmethod
     def create_data_map(data):
-        item = {}
-        item['title'] = data.subject
-        item['text'] = data.obstext.replace("\n", "<br>")
-        item['user'] = '%s %s' % (data.user.first, data.user.last)
-        item['postdate'] = data.observtime.strftime('%Y-%m-%d %H:%M:%S.%f')
-        item['sortdate'] = data.sortdate.strftime('%Y-%m-%d %H:%M:%S.%f')
+        item              = {}
+        item['date']      = data[1]['date']
+        item['subject']   = data[1]['subject']
+        item['type']      = data[1]['type']
+        item['body']      = data[1]['body'].replace("\r\n", "<br>").replace("\n", "<br>")
+        if 'documents' in data[1]:
+            item['documents'] = []
+            for doc in data[1]['documents']:
+                d         = {}
+                d['name'] = doc['name']
+                d['url']  = doc['link']
+                item['documents'].append(d)
 
         return item
 
@@ -114,7 +114,5 @@ class LogsAPI(Resource):
             json_settings['sort_keys'] = True
 
         params = {}
-        params['op'] = { 'type': 'string', 'required': 'no', 'options': 'time, posts',
-                         'note': 'Returns datetime for last record in the database. Other parameters not required.'}
         params['num'] = { 'type': 'int', 'required': 'no', 'default': 20, 'note': 'Number of log entries to return'}
         return params
