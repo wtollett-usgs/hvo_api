@@ -1,6 +1,6 @@
 from datetime import datetime
 from flask import request, current_app
-from flask.ext.restful import Resource, reqparse
+from flask.ext.restful import Resource
 from flask.ext.restful.representations.json import settings as json_settings
 from json import loads as jsonload
 from logging import getLogger
@@ -13,15 +13,10 @@ import traceback
 
 class LogsAPI(Resource):
     def __init__(self):
-        self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('num', type = int, required = False, default = 20)
         super(LogsAPI, self).__init__()
 
     def get(self):
         # Return expected parameter output, also set indent settings
-        if not request.args:
-            return self.create_param_string(), 200
-
         if (not current_app.debug) and (json_settings and json_settings['indent']):
             json_settings['indent'] = None
 
@@ -94,6 +89,7 @@ class LogsAPI(Resource):
     def create_data_map(data):
         item              = {}
         item['date']      = data[1]['date']
+        item['user']      = data[1]['user']
         item['subject']   = data[1]['subject']
         item['type']      = data[1]['type']
         item['body']      = data[1]['body'].replace("\r\n", "<br>").replace("\n", "<br>")
@@ -106,13 +102,3 @@ class LogsAPI(Resource):
                 item['documents'].append(d)
 
         return item
-
-    @staticmethod
-    def create_param_string():
-        if not current_app.debug:
-            json_settings['indent']    = 4
-            json_settings['sort_keys'] = True
-
-        params = {}
-        params['num'] = { 'type': 'int', 'required': 'no', 'default': 20, 'note': 'Number of log entries to return'}
-        return params
