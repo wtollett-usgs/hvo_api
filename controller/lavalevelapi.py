@@ -25,7 +25,7 @@ class LavaLevelAPI(Resource):
         args      = self.reqparse.parse_args()
         tz        = (args['timezone'].lower() == 'hst')
         start,end = create_date_from_input(args['starttime'], args['endtime'], tz)
-        w_items   = [LavaLevel.timestamp.between(date_to_j2k(start), date_to_j2k(end)), LavaLevel.rid == args['rank']]
+        w_items   = [LavaLevel.timestamp.between(date_to_j2k(start, tz), date_to_j2k(end, tz)), LavaLevel.rid == args['rank']]
         data      = LavaLevel.query.filter(*w_items).all()
 
         output = []
