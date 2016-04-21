@@ -16,7 +16,6 @@ class LogsAPI(Resource):
         super(LogsAPI, self).__init__()
 
     def get(self):
-        # Return expected parameter output, also set indent settings
         if (not current_app.debug) and (json_settings and json_settings['indent']):
             json_settings['indent'] = None
 
@@ -48,8 +47,8 @@ class LogsAPI(Resource):
                 body = h.unescape(arg['body'])
                 lf.debug("body: %s" % body)
 
-                values = {'email': arg['email'],
-                          'username': arg['username'],
+                values = {'email': arg['email'] if 'email' in arg else '',
+                          'username': arg['username'] if 'username' in arg else '',
                           'appname': arg['appname'],
                           'subject': arg['subject'],
                           'body': body.encode('utf-8'),
@@ -76,6 +75,11 @@ class LogsAPI(Resource):
                 values['keywords[]'] = 'Earthquake'
 
             lf.debug(values)
+
+            if 'appname' in arg:
+                if arg['appname'] == 'test':
+                    return { 'status': 'ok' }, 201
+
             data = urllib.urlencode(values)
             req = urllib2.Request(url, data, headers)
             response = urllib2.urlopen(req)
