@@ -64,7 +64,8 @@ class LogsAPI(Resource):
                 # TODO: Allow editing?
 
                 # Required fields
-                values = {'email': arg['user'],
+                values = {'email': arg['email'] if 'email' in arg else '',
+                          'username': arg['user'] if 'user' in arg else '',
                           'appname': 'hvoapi',
                           'subject': arg['subject'],
                           'body': arg['text'],
