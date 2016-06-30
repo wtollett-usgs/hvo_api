@@ -14,3 +14,6 @@ db4 = SQLAlchemy()
 
 # RSAM and LavaLevel
 db5 = SQLAlchemy()
+
+# Strain
+db6 = SQLAlchemy()

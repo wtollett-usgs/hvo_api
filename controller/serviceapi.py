@@ -10,6 +10,7 @@ class ServiceAPI(Resource):
                  'MGOSYSTEMATICS_URL': url_for('mgosys'),
                  'MAGMATICSULFUR_URL': url_for('magmaticsulfur'),
                  'RSAM_URL': url_for('rsam'),
+                 'STRAIN_URL': url_for('strain'),
                  'TREMOR_URL': url_for('tremor'),
                  'LAVALEVEL_URL': url_for('lavalevel'),
                  'TILT_URL': url_for('tilt'),
