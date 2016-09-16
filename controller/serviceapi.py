@@ -14,4 +14,5 @@ class ServiceAPI(Resource):
                  'TREMOR_URL': url_for('tremor'),
                  'LAVALEVEL_URL': url_for('lavalevel'),
                  'TILT_URL': url_for('tilt'),
-                 'FLYSPEC_URL': url_for('flyspec') }, 200
+                 'FLYSPEC_URL': url_for('flyspec'),
+                 'HYPOCENTER_URL': url_for('hypocenter') }, 200
