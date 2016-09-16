@@ -9,7 +9,7 @@ db2 = SQLAlchemy()
 # Olivine Incompatible Elements and Flyspec
 db3 = SQLAlchemy()
 
-# Magmatic Sulfur
+# Magmatic Sulfur and Hypocenters
 db4 = SQLAlchemy()
 
 # RSAM and LavaLevel
