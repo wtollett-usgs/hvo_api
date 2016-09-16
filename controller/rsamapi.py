@@ -32,7 +32,6 @@ class RSAMAPI(Resource):
         if set([x.upper() for x in channels]).difference(rsam._tablenames):
             return { 'Error': 'unknown channel' }
 
-        args       = self.reqparse.parse_args()
         tz         = (args['timezone'] == 'hst')
         start, end = create_date_from_input(args['starttime'], args['endtime'], tz)
         output     = {}
