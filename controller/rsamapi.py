@@ -67,10 +67,11 @@ class RSAMAPI(Resource):
             elif args['downsample'] == 'mean':
                 q_items  = []
                 interval = args['dsint']
+                groupby  = ['intNum', cname.timestamp]
                 q_items.append(func.min(cname.timestamp).label('timestamp'))
                 q_items.append(func.avg(cname.rsam).label('rsam'))
                 q_items.append(((cname.timestamp)-date_to_j2k(start, tz)).self_group().op('div')(interval).label('intNum'))
-                q = db.session.query(*q_items).filter(*queryclauses).order_by(*orderby).group_by('intNum')
+                q = db.session.query(*q_items).filter(*queryclauses).order_by(*orderby).group_by(*groupby)
                 try:
                     q = q.limit(MAX_LINES['RSAM'])
                 except KeyError:
