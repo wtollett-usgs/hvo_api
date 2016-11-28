@@ -78,7 +78,7 @@ class IncompatiblesAPI(Resource):
                 d     = date_to_j2k(arg['date'], False)
                 item  = cname.query.filter_by(timestamp = d).first()
                 if item:
-                    lf.debug('Updating item for j2ksec: ' + str(d))
+                    lf.debug('INCOMPATIBLES::Updating item for j2ksec: ' + str(d))
                     item.wr_k2o_tio2    = '%.3f' % float(arg['wr_k2o_tio2']) if arg['wr_k2o_tio2'] != '' else None
                     item.gls_k2o_tio2   = '%.3f' % float(arg['gls_k2o_tio2']) if arg['gls_k2o_tio2'] != '' else None
                     item.wr_cao_al2o3   = '%.3f' % float(arg['wr_cao_al2o3']) if arg['wr_cao_al2o3'] != '' else None
@@ -95,7 +95,7 @@ class IncompatiblesAPI(Resource):
                                   wr_la_yb_inaa=arg['wr_la_yb_inaa'], wr_la_yb_icpms=arg['wr_la_yb_icpms'],
                                   wr_zr_y_wdx=arg['wr_zr_y_wdx'], wr_zr_y_edx=arg['wr_zr_y_edx'],
                                   wr_sr_edx=arg['wr_sr_edx'], sid=arg['sid'])
-                    lf.debug('Attempting to insert incompatibles observation for region=%s, date=%s, wr_k2o_tio2=%s, '\
+                    lf.debug('INCOMPATIBLES::Attempting to insert incompatibles observation for region=%s, date=%s, wr_k2o_tio2=%s, '\
                              'gls_k2o_tio2=%s, wr_cao_al2o3=%s, wr_cao_tio2=%s, wr_la_yb_inaa=%s, wr_la_yb_icpms=%s, '\
                              'wr_zr_y_wdx=%s, wr_zr_y_edx=%s, wr_sr_edx=%s, sid=%s'
                             % (arg['region'], arg['date'], arg['wr_k2o_tio2'], arg['gls_k2o_tio2'], arg['wr_cao_al2o3'],
@@ -103,7 +103,7 @@ class IncompatiblesAPI(Resource):
                                arg['wr_zr_y_edx'], arg['wr_sr_edx'], arg['sid']))
                     db.session.add(item)
             db.session.commit()
-            lf.debug('Item(s) added')
+            lf.debug('INCOMPATIBLES::Item(s) added')
             return { 'status': 'ok' }, 201
         except:
             return { 'status': 'error' }, 400
