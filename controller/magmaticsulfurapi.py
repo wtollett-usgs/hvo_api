@@ -70,16 +70,16 @@ class MagmaticSulfurAPI(Resource):
                 d     = date_to_j2k(arg['date'], False)
                 item  = cname.query.filter_by(timestamp = d).first()
                 if item:
-                    lf.debug('Updating item with j2ksec: ' + str(d))
+                    lf.debug('MAGMATICSULFUR::Updating item with j2ksec: ' + str(d))
                     item.olvinc_sppm = '%.2f' % float(arg['olvinc_sppm']) if arg['olvinc_sppm'] != '' else None
                 else:
                     item  = cname(time=arg['date'], olvinc_sppm=arg['olvinc_sppm'], sid=arg['sid'])
-                    lf.debug('Attempting to insert magmaticsulfur observation for region=%s, date=%s, olvinc_sppm=%s, '\
+                    lf.debug('MAGMATICSULFUR::Attempting to insert magmaticsulfur observation for region=%s, date=%s, olvinc_sppm=%s, '\
                              'sid=%s'
                              % (arg['region'], arg['date'], arg['olvinc_sppm'], arg['sid']))
                     db.session.add(item)
             db.session.commit()
-            lf.debug('Item(s) added/Updated')
+            lf.debug('MAGMATICSULFUR::Item(s) added/Updated')
             return { 'status': 'ok' }, 201
         except:
             return { 'status': 'error' }, 400

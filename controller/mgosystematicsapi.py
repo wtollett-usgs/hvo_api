@@ -84,17 +84,17 @@ class MgOSystematicsAPI(Resource):
                     d    = date_to_j2k(arg['date'], False)
                     item = cname.query.filter_by(timestamp = d).first()
                     if item:
-                        lf.debug('Updating item with j2ksec: ' + str(d))
+                        lf.debug('MGOSYS::Updating item with j2ksec: ' + str(d))
                         item.olv_fo_meas = '%.2f' % float(arg['olv_fo_meas'])
                     else:
-                        lf.debug('Inserting new item for j2ksec: ' + str(d))
+                        lf.debug('MGOSYS::Inserting new item for j2ksec: ' + str(d))
                         item = cname(time=arg['date'], olv_fo_meas=arg['olv_fo_meas'], sid=arg['sid'])
                         db.session.add(item)
                 else:
                     d    = date_to_j2k(arg['date'], False)
                     item = cname.query.filter_by(timestamp = d).first()
                     if item:
-                        lf.debug('Updating mgosystematics item with j2ksec: ' + str(d))
+                        lf.debug('MGOSYS::Updating mgosystematics item with j2ksec: ' + str(d))
                         item.wr_mgo_wt        = '%.2f' % float(arg['wr_mgo_wt']) if arg['wr_mgo_wt'] != '' else None
                         item.gls_mgo_wt       = '%.2f' % float(arg['gls_mgo_wt']) if arg['gls_mgo_wt'] != '' else None
                         item.gls_mgo_tempcorr = '%.2f' % float(arg['gls_mgo_tempcorr']) if arg['gls_mgo_tempcorr'] != '' else None
@@ -104,12 +104,12 @@ class MgOSystematicsAPI(Resource):
                         item.olv_fo_meas      = '%.2f' % float(arg['olv_fo_meas']) if arg['olv_fo_meas'] != '' else None
                         item.sid              = arg['sid'] if arg['sid'] != '' else None
                     else:
-                        lf.debug('Inserting new mgosystematics item for j2ksec: ' + str(d))
+                        lf.debug('MGOSYS::Inserting new mgosystematics item for j2ksec: ' + str(d))
                         item = cname(time=arg['date'], wr_mgo_wt=arg['wr_mgo_wt'], gls_mgo_wt=arg['gls_mgo_wt'],
                                      gls_mgo_tempcorr=arg['gls_mgo_tempcorr'], wr_mgo_temp=arg['wr_mgo_temp'],
                                      wr_fo_clc=arg['wr_fo_clc'], gls_fo_clccorr=arg['gls_fo_clccorr'],
                                      olv_fo_meas=arg['olv_fo_meas'], sid=arg['sid'])
-                        lf.debug('Attempting to insert mgosystematics observation for region=%s, date=%s, wr_mgo_wt=%s, '\
+                        lf.debug('MGOSYS::Attempting to insert mgosystematics observation for region=%s, date=%s, wr_mgo_wt=%s, '\
                                  'gls_mgo_wt=%s, gls_mgo_tempcorr=%s, wr_mgo_temp=%s, wr_fo_clc=%s, gls_fo_clccorr=%s, '\
                                  'olv_fo_meas=%s, sid=%s'
                                 % (arg['region'], arg['date'], arg['wr_mgo_wt'], arg['gls_mgo_wt'], arg['gls_mgo_tempcorr'],
@@ -117,7 +117,7 @@ class MgOSystematicsAPI(Resource):
                                    arg['sid']))
                         db.session.add(item)
             db.session.commit()
-            lf.debug('Item(s) added/updated')
+            lf.debug('MGOSYS::Item(s) added/updated')
             return { 'status': 'ok' }, 201
         except:
             return { 'status': 'error' }, 400
