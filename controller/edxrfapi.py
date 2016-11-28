@@ -74,7 +74,7 @@ class EDXRFAPI(Resource):
                 d     = date_to_j2k(arg['date'], False)
                 item  = cname.query.filter_by(timestamp = d).first()
                 if item:
-                    lf.debug('Updating item for j2ksec: ' + str(d))
+                    lf.debug('EDXRF::Updating item for j2ksec: ' + str(d))
                     item.rb = '%.2f' % float(arg['rb']) if arg['rb'] != '' else None
                     item.sr = '%.2f' % float(arg['sr']) if arg['sr'] != '' else None
                     item.y  = '%.2f' % float(arg['y']) if arg['y'] != '' else None
@@ -82,11 +82,11 @@ class EDXRFAPI(Resource):
                     item.nb = '%.2f' % float(arg['nb']) if arg['nb'] != '' else None
                 else:
                     item  = cname(time=arg['date'], rb=arg['rb'], sr=arg['sr'], y=arg['y'], zr=arg['zr'], nb=arg['nb'])
-                    lf.debug('Attempting to insert edxrf observation for region=%s, date=%s, rb=%s, sr=%s, y=%s, zr=%s, nb=%s'
+                    lf.debug('EDXRF::Attempting to insert edxrf observation for region=%s, date=%s, rb=%s, sr=%s, y=%s, zr=%s, nb=%s'
                             % (arg['region'], arg['date'], arg['rb'], arg['sr'], arg['y'], arg['zr'], arg['nb']))
                     db.session.add(item)
             db.session.commit()
-            lf.debug('Item added')
+            lf.debug('EDXRF::Item added')
             return { 'status': 'ok' }, 201
         except:
             return { 'status': 'error' }, 400
