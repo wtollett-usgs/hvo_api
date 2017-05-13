@@ -5,6 +5,7 @@ from controller.ashapi import AshAPI
 from controller.edxrfapi import EDXRFAPI
 from controller.fileapi import FileAPI
 from controller.flyspecapi import FlyspecAPI
+from controller.gitapi import GitAPI
 from controller.hypocenterapi import HypocenterAPI
 from controller.incompatiblesapi import IncompatiblesAPI
 from controller.mgosystematicsapi import MgOSystematicsAPI
@@ -34,6 +35,7 @@ def create_app(*args, **kwargs):
     api.add_resource(AshAPI, '/api/ash', endpoint = 'ash')
     api.add_resource(EDXRFAPI, '/api/edxrf', endpoint = 'edxrf')
     api.add_resource(FlyspecAPI, '/api/flyspec', endpoint = 'flyspec')
+    api.add_resource(GitAPI, '/api/git', endpoint = 'git')
     api.add_resource(HypocenterAPI, '/api/hypocenter', endpoint = 'hypocenter')
     api.add_resource(IncompatiblesAPI, '/api/incompatibles', endpoint = 'incompatibles')
     api.add_resource(FileAPI, '/api/file', endpoint = 'file')
