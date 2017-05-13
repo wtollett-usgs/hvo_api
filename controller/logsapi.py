@@ -39,7 +39,7 @@ class LogsAPI(Resource):
             headers = {'Authorization': ***REMOVED***}
             arg = request.form
             if arg:
-                lf.debug('LOGS::form values from HANS')
+                lf.debug("LOGS::form values from HANS")
                 h = HTMLParser.HTMLParser()
 
                 #s = 'Attempting to insert log entry for postdate=%s, obsdate=%s, user=%s, subject=%s'
@@ -75,7 +75,7 @@ class LogsAPI(Resource):
                 values['obsdate'] = hidt.strftime('%Y-%m-%d %H:%M:%S')
                 values['keywords[]'] = 'Earthquake'
 
-            lf.debug('LOGS::%s' % values)
+            lf.debug("LOGS::%s" % values)
 
             if 'appname' in arg:
                 if arg['appname'] == 'test':
@@ -84,10 +84,10 @@ class LogsAPI(Resource):
             data = urllib.urlencode(values)
             req = urllib2.Request(url, data, headers)
             response = urllib2.urlopen(req)
-            lf.debug('LOGS::%s' % response.read())
+            lf.debug("LOGS::%s" % response.read())
             return { 'status': 'ok' }, 201
         except Exception:
-            lf.debug('LOGS::%s' % traceback.format_exc())
+            lf.debug("LOGS::%s" % traceback.format_exc())
             return { 'status': 'error' }, 400
 
     @staticmethod
