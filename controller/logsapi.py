@@ -9,6 +9,7 @@ import HTMLParser
 import pytz
 import urllib
 import urllib2
+import requests
 import traceback
 
 class LogsAPI(Resource):
@@ -38,6 +39,8 @@ class LogsAPI(Resource):
             url = "https://hvointernal.wr.usgs.gov/hvo_logs/api/addpost.form"
             headers = {'Authorization': ***REMOVED***}
             arg = request.form
+            files = ''
+            send_files = {}
             if arg:
                 lf.debug("LOGS::form values from HANS")
                 h = HTMLParser.HTMLParser()
@@ -46,6 +49,8 @@ class LogsAPI(Resource):
                 #lf.debug(s % (arg['postdate'], arg['obsdate'], arg['user'], arg['subject']))
                 body = h.unescape(arg['body'])
                 lf.debug("LOGS::body: %s" % body)
+                files = request.files.getlist("file")
+                lf.debug("LOGS::files %s" % files)
 
                 values = {'email': arg['email'] if 'email' in arg else '',
                           'username': arg['username'] if 'username' in arg else '',
@@ -53,6 +58,11 @@ class LogsAPI(Resource):
                           'subject': arg['subject'],
                           'body': body.encode('utf-8'),
                           'post_type': arg['post_type']}
+
+                for idx, f in enumerate(files):
+                    field = "file_%d" % idx
+                    f.save("/tmp/%s" % f.filename)
+                    send_files[field] = open("/tmp/%s" % f.filename, 'rb')
             else:
                 arg = jsonload(request.data)
 
@@ -77,14 +87,12 @@ class LogsAPI(Resource):
 
             lf.debug("LOGS::%s" % values)
 
-            if 'appname' in arg:
-                if arg['appname'] == 'test':
-                    return { 'status': 'ok' }, 201
+#            if 'appname' in arg:
+#                if arg['appname'] == 'test':
+#                    return { 'status': 'ok' }, 201
 
-            data = urllib.urlencode(values)
-            req = urllib2.Request(url, data, headers)
-            response = urllib2.urlopen(req)
-            lf.debug("LOGS::%s" % response.read())
+            response = requests.post(url, data=values, headers=headers, files=send_files)
+            lf.debug("LOGS::%s" % response.json)
             return { 'status': 'ok' }, 201
         except Exception:
             lf.debug("LOGS::%s" % traceback.format_exc())
