@@ -1,4 +1,4 @@
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 
 # Ash and EDXRF and Tremor
 db = SQLAlchemy()

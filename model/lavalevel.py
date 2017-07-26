@@ -8,7 +8,7 @@ class LavaLevel(db.Model):
     lavalevel = db.Column(db.Float)
     tid       = db.Column(db.Integer)
     rid       = db.Column(db.Integer, primary_key=True)
-    rank      = db.relationship('LavaLevelRank', uselist=False)
+    rank      = db.relationship('LavaLevelRank', uselist=False,  viewonly=True)
 
 class LavaLevelRank(db.Model):
     __tablename__ = 'ranks'

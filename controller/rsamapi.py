@@ -1,7 +1,6 @@
 from common_constants import MAX_LINES, DS_OPTIONS
 from flask import request, current_app
-from flask.ext.restful import Resource, reqparse
-from flask.ext.restful.representations.json import settings as json_settings
+from flask_restful import Resource, reqparse
 from sqlalchemy import func
 from sqlalchemy.sql import text
 from valverest.database import db5 as db
@@ -24,8 +23,8 @@ class RSAMAPI(Resource):
         if not request.args:
             return self.create_param_string(), 200
 
-        if (not current_app.debug) and (json_settings and json_settings['indent']):
-            json_settings['indent'] = None
+        if not current_app.debug:
+            current_app.config['RESTFUL_JSON'] = {}
 
         args     = self.reqparse.parse_args()
         channels = args['channel'].split(',')
@@ -91,8 +90,11 @@ class RSAMAPI(Resource):
     @staticmethod
     def create_param_string():
         if not current_app.debug:
-            json_settings['indent'] = 4
-            json_settings['sort_keys'] = True
+            settings = current_app.config.get('RESTFUL_JSON', {})
+            settings.setdefault('indent', 4)
+            settings.setdefault('sort_keys', True)
+            current_app.config['RESTFUL_JSON'] = settings
+
         params = {}
         params['channel'] = {'type': 'string', 'required': 'no', 'note': 'Can be comma-separated list.',
                              'options': rsam._tablenames}
