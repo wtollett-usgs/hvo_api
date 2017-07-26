@@ -16,11 +16,11 @@ class EDXRFBase(object):
 
     @declared_attr
     def rank(self):
-        return db.relationship('EDXRFRank', uselist=False)
+        return db.relationship('EDXRFRank', uselist=False, viewonly=True)
 
     @declared_attr
     def translation(self):
-        return db.relationship('EDXRFTranslation', uselist=False)
+        return db.relationship('EDXRFTranslation', uselist=False, viewonly=True)
 
 class KIERZ(EDXRFBase, db.Model):
     __tablename__ = 'KIERZ'

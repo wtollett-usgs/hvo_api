@@ -1,7 +1,6 @@
 from datetime import datetime
 from flask import request, current_app
-from flask.ext.restful import Resource
-from flask.ext.restful.representations.json import settings as json_settings
+from flask_restful import Resource
 from json import loads as jsonload
 from logging import getLogger
 
@@ -17,8 +16,8 @@ class LogsAPI(Resource):
         super(LogsAPI, self).__init__()
 
     def get(self):
-        if (not current_app.debug) and (json_settings and json_settings['indent']):
-            json_settings['indent'] = None
+        if not current_app.debug:
+            current_app.config['RESTFUL_JSON'] = {}
 
         url = "https://hvointernal.wr.usgs.gov/hvo_logs/api/getposts"
         headers = {'Authorization': ***REMOVED***}

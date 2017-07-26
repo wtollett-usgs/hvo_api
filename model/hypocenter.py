@@ -24,8 +24,8 @@ class Hypocenter(db.Model):
     rmk       = db.Column(db.String(1))
 
     # Relationships
-    rank   = db.relationship('HypocenterRank', uselist=False)
-    remark = db.relationship('HypocenterRemark', uselist=False)
+    rank   = db.relationship('HypocenterRank', uselist=False, viewonly=True)
+    remark = db.relationship('HypocenterRemark', uselist=False, viewonly=True)
 
 class HypocenterRank(db.Model):
     __tablename__ = 'ranks'

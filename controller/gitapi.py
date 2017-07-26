@@ -2,7 +2,7 @@
 # into hvo-api, which was already running
 
 from flask import request, current_app
-from flask.ext.restful import Resource
+from flask_restful import Resource
 from model.gitdata import PullRequest, PullRequestComment, Issue, IssueComment, Repository, Branch, Push, Tag, CommitComment, Wiki
 from logging import getLogger
 
