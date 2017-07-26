@@ -17,11 +17,11 @@ class StrainBase(object):
 
     @declared_attr
     def rank(self):
-        return db.relationship('StrainRank', uselist=False)
+        return db.relationship('StrainRank', uselist=False, viewonly=True)
 
     @declared_attr
     def translation(self):
-        return db.relationship('StrainTranslation', uselist=False)
+        return db.relationship('StrainTranslation', uselist=False, viewonly=True)
 
 class StrainTranslation(db.Model):
     __tablename__ = 'translations'

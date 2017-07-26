@@ -1,6 +1,5 @@
 from flask import request, current_app
-from flask.ext.restful import Resource, reqparse
-from flask.ext.restful.representations.json import settings as json_settings
+from flask_restful import Resource, reqparse
 from model.tremor import catalog, station
 from sqlalchemy import func, distinct
 from sqlalchemy.sql.expression import cast
@@ -25,8 +24,8 @@ class TremorAPI(Resource):
         if not request.args:
             return self.create_param_string(), 200
 
-        if (not current_app.debug) and (json_settings and json_settings['indent']):
-            json_settings['indent'] = None
+        if not current_app.debug:
+            current_app.config['RESTFUL_JSON'] = {}
 
         args      = self.reqparse.parse_args()
         starttime = args['starttime']
@@ -105,8 +104,10 @@ class TremorAPI(Resource):
     @staticmethod
     def create_param_string():
         if not current_app.debug:
-            json_settings['indent']    = 4
-            json_settings['sort_keys'] = True
+            settings = current_app.config.get('RESTFUL_JSON', {})
+            settings.setdefault('indent', 4)
+            settings.setdefault('sort_keys', True)
+            current_app.config['RESTFUL_JSON'] = settings
 
         params = {}
         params['starttime'] = { 'type': 'string', 'required': 'yes',

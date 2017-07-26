@@ -1,5 +1,5 @@
 from flask import url_for
-from flask.ext.restful import Resource
+from flask_restful import Resource
 
 class ServiceAPI(Resource):
     def get(self):

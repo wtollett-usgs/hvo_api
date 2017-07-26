@@ -1,7 +1,6 @@
 from common_constants import MAX_LINES, DS_OPTIONS
 from flask import request, current_app
-from flask.ext.restful import Resource, reqparse
-from flask.ext.restful.representations.json import settings as json_settings
+from flask_restful import Resource, reqparse
 from valverest.database import db6 as db
 from valverest.util import create_date_from_input, date_to_j2k, j2k_to_date
 
@@ -25,8 +24,8 @@ class StrainAPI(Resource):
         if not request.args:
             return self.create_param_string(), 200
 
-        if (not current_app) and (json_settings and json_settings['indent']):
-            json_settings['indent'] = None
+        if not current_app.debug:
+            current_app.config['RESTFUL_JSON'] = {}
 
         args = self.reqparse.parse_args()
 
@@ -83,7 +82,7 @@ class StrainAPI(Resource):
                 mbarometer = 0
 
             for d in data:
-                a = { 'date': Date(d.timestamp, tz).strftime('%Y-%m-%d %H:%M:%S.%f'),
+                a = { 'date': Date(d.timestamp, tz).strftime('%Y-%m-%d %H:%M:%S'),
                       'rank': d.rank.name }
 
                 if 'dt01' in series:
@@ -100,8 +99,10 @@ class StrainAPI(Resource):
     @staticmethod
     def create_param_string():
         if not current_app.debug:
-            json_settings['indent'] = 4
-            json_settings['sort_keys'] = True
+            settings = current_app.config.get('RESTFUL_JSON', {})
+            settings.setdefault('indent', 4)
+            settings.setdefault('sort_keys', True)
+            current_app.config['RESTFUL_JSON'] = settings
 
         params = {}
         params['channel'] = {'type': 'string', 'required': 'yes', 'note': 'Can be comma-separated list.',

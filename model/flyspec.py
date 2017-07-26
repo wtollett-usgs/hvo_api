@@ -29,7 +29,7 @@ class FlyspecBase(object):
 
     @declared_attr
     def rank(self):
-        return db.relationship('FlyspecRank', uselist=False)
+        return db.relationship('FlyspecRank', uselist=False, viewonly=True)
 
 class FlyspecRank(db.Model):
     __tablename__ = 'ranks'

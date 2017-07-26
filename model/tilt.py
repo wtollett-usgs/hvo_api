@@ -22,11 +22,11 @@ class TiltBase(object):
 
     @declared_attr
     def rank(self):
-        return db.relationship('TiltRank', uselist=False)
+        return db.relationship('TiltRank', uselist=False, viewonly=True)
 
     @declared_attr
     def translation(self):
-        return db.relationship('TiltTranslation', uselist=False)
+        return db.relationship('TiltTranslation', uselist=False, viewonly=True)
 
 class TiltTranslation(db.Model):
     __tablename__ = 'translations'
