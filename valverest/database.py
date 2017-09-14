@@ -17,3 +17,6 @@ db5 = SQLAlchemy()
 
 # Strain
 db6 = SQLAlchemy()
+
+# GPS
+db7 = SQLAlchemy()
