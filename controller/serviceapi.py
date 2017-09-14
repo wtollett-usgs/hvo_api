@@ -15,4 +15,5 @@ class ServiceAPI(Resource):
                  'LAVALEVEL_URL': url_for('lavalevel'),
                  'TILT_URL': url_for('tilt'),
                  'FLYSPEC_URL': url_for('flyspec'),
-                 'HYPOCENTER_URL': url_for('hypocenter') }, 200
+                 'HYPOCENTER_URL': url_for('hypocenter'),
+                 'GPS_URL': url_for('gps') }, 200
