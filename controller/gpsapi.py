@@ -66,6 +66,10 @@ class GPSAPI(Resource):
                     enurows[i,1] -= nm
                     enurows[i,2] -= um
 
+                lm = sum(data['lendata'][x] for x in range(len(data['lendata']))) / float(len(data['lendata']))
+                for i in range(len(data['lendata'])):
+                    data['lendata'][i] -= lm
+
                 List = cdata.append
                 for i in range(len(enurows)):
                     current_res = {'date': j2k_to_date(data['t'][i], tz).strftime('%Y-%m-%d %H:%M:%S.%f'), 'rank': data['r'][i]}
@@ -75,6 +79,8 @@ class GPSAPI(Resource):
                         current_res['north'] = enurows[i,1]
                     if 'up' in args['series']:
                         current_res['up'] = enurows[i,2]
+                    if 'length' in args['series']:
+                        current_res['length'] = data['lendata'][i]
                     List(current_res)
 
                 q_data[channel] = cdata
