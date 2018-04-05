@@ -12,6 +12,7 @@ class ServiceAPI(Resource):
                  'RSAM_URL': url_for('rsam'),
                  'STRAIN_URL': url_for('strain'),
                  'TREMOR_URL': url_for('tremor'),
+                 'LASERLAVALEVEL_URL': url_for('laserlavalevel'),
                  'LAVALEVEL_URL': url_for('lavalevel'),
                  'TILT_URL': url_for('tilt'),
                  'FLYSPEC_URL': url_for('flyspec'),

@@ -18,5 +18,8 @@ db5 = SQLAlchemy()
 # Strain
 db6 = SQLAlchemy()
 
-# GPS
+# GPS & LaserLavaLevel
 db7 = SQLAlchemy()
+
+# LaserLavaLevel
+db8 = SQLAlchemy()
