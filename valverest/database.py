@@ -23,3 +23,6 @@ db7 = SQLAlchemy()
 
 # LaserLavaLevel
 db8 = SQLAlchemy()
+
+# SO2HighRes
+db9 = SQLAlchemy()
