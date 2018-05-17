@@ -15,10 +15,11 @@ from controller.mgosystematicsapi import MgOSystematicsAPI
 from controller.magmaticsulfurapi import MagmaticSulfurAPI
 from controller.rsamapi import RSAMAPI
 from controller.serviceapi import ServiceAPI
+from controller.so2highresapi import SO2HighResAPI
 from controller.strainapi import StrainAPI
 from controller.tiltapi import TiltAPI
 from controller.tremorapi import TremorAPI
-from valverest.database import db, db2, db3, db4, db5, db6, db7, db8
+from valverest.database import db, db2, db3, db4, db5, db6, db7, db8, db9
 import logging
 
 def create_app(*args, **kwargs):
@@ -34,6 +35,7 @@ def create_app(*args, **kwargs):
     db6.init_app(app)
     db7.init_app(app)
     db8.init_app(app)
+    db9.init_app(app)
     api.add_resource(ServiceAPI, '/', '/api')
     api.add_resource(AshAPI, '/api/ash', endpoint = 'ash')
     api.add_resource(EDXRFAPI, '/api/edxrf', endpoint = 'edxrf')
@@ -48,6 +50,7 @@ def create_app(*args, **kwargs):
     api.add_resource(MagmaticSulfurAPI, '/api/magmaticsulfur', endpoint = 'magmaticsulfur')
     api.add_resource(MgOSystematicsAPI, '/api/mgosys', endpoint = 'mgosys')
     api.add_resource(RSAMAPI, '/api/rsam', endpoint = 'rsam')
+    api.add_resource(SO2HighResAPI, '/api/so2highres', endpoint = 'so2highres')
     api.add_resource(StrainAPI, '/api/strain', endpoint = 'strain')
     api.add_resource(TiltAPI, '/api/tilt', endpoint = 'tilt')
     api.add_resource(TremorAPI, '/api/tremor', endpoint = 'tremor')

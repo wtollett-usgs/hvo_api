@@ -17,4 +17,5 @@ class ServiceAPI(Resource):
                  'TILT_URL': url_for('tilt'),
                  'FLYSPEC_URL': url_for('flyspec'),
                  'HYPOCENTER_URL': url_for('hypocenter'),
-                 'GPS_URL': url_for('gps') }, 200
+                 'GPS_URL': url_for('gps'),
+                 'SO2HIGHRES_URL': url_for('so2highres') }, 200
