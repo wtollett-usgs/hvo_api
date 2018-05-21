@@ -99,12 +99,15 @@ class LogsAPI(Resource):
 
     @staticmethod
     def create_data_map(data):
-        item              = {}
-        item['date']      = data[1]['date']
-        item['user']      = data[1]['user']
-        item['subject']   = data[1]['subject']
-        item['type']      = data[1]['type']
-        item['body']      = data[1]['body'].replace("\r\n", "<br>").replace("\n", "<br>")
+        item            = {}
+        item['date']    = data[1]['date']
+        item['user']    = data[1]['user']
+        item['subject'] = data[1]['subject']
+        item['type']    = data[1]['type']
+        if data[1]['body']:
+            item['body'] = data[1]['body'].replace("\r\n", "<br>").replace("\n", "<br>")
+        else:
+            item['body'] = None
         if 'documents' in data[1]:
             item['documents'] = []
             for doc in data[1]['documents']:
