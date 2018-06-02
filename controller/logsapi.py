@@ -100,6 +100,7 @@ class LogsAPI(Resource):
     @staticmethod
     def create_data_map(data):
         item            = {}
+        item['id']      = data[1]['post_id']
         item['date']    = data[1]['date']
         item['user']    = data[1]['user']
         item['subject'] = data[1]['subject']
