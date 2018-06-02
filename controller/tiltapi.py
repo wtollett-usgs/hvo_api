@@ -163,6 +163,9 @@ class TiltAPI(Resource):
                     azimuth = self.get_optimal_azimuth(data) % 360.0
                 else:
                     azimuth = args['azimuth'] % 360.0
+                
+                if len(data) == 0:
+                    continue
 
                 # Subtract means to get zero-based values
                 em = sum([x['east'] for x in data]) / float(len(data))
