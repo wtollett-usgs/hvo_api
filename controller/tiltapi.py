@@ -202,6 +202,7 @@ class TiltAPI(Resource):
 
         return { 'nr': count,
                  'used_azimuth': azimuth,
+                 'tangential_azimuth': (azimuth + 90) % 360,
                  'records': raw_output }, 200
 
     @staticmethod
