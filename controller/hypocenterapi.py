@@ -42,7 +42,7 @@ class HypocenterAPI(Resource):
         self.reqparse.add_argument('timezone', type = str, required = False, default = 'hst')
         self.reqparse.add_argument('magmin', type = float, required = False, default = -2)
         self.reqparse.add_argument('magmax', type = float, required = False, default = 10)
-        self.reqparse.add_argument('depthmin', type = float, required = False, default = 0)
+        self.reqparse.add_argument('depthmin', type = float, required = False, default = -4)
         self.reqparse.add_argument('depthmax', type = float, required = False, default = str(float_info.max))
         self.reqparse.add_argument('nphasesmin', type = int, required = False, default = 0)
         self.reqparse.add_argument('nphasesmax', type = int, required = False, default = 100)
