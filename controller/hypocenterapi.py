@@ -36,7 +36,7 @@ class HypocenterAPI(Resource):
         self.reqparse.add_argument('west', type = float, required = False)
         self.reqparse.add_argument('geo', type = str, required = False,
                                    choices = _hawaii_coords.keys(), default = 'hawaii')
-        self.reqparse.add_argument('rank', type = int, required = False, default = 1)
+        self.reqparse.add_argument('rank', type = int, required = False, default = 0)
         self.reqparse.add_argument('starttime', type = str, required = True)
         self.reqparse.add_argument('endtime', type = str, required = False, default = 'now')
         self.reqparse.add_argument('timezone', type = str, required = False, default = 'hst')
@@ -132,7 +132,7 @@ class HypocenterAPI(Resource):
                               'note': 'Will also accept things like -6m for last six months.',
                               'format': 'yyyy[MMdd[hhmm]]'}
         params['endtime'] = {'type': 'string', 'required': 'no', 'format': 'yyyy[MMdd[hhmm]]', 'default': 'now'}
-        params['rank'] = {'type': 'int', 'required': 'no', 'default': 1,
+        params['rank'] = {'type': 'int', 'required': 'no', 'default': 0,
                          'note': 'A rank of 0 will return the best possible rank.'}
         params['timezone'] = {'type': 'string', 'required': 'no', 'default': 'hst'}
         params['north'] = {'type': 'float', 'required': 'no', 'note':
