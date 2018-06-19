@@ -11,6 +11,7 @@ class ServiceAPI(Resource):
                  'MAGMATICSULFUR_URL': url_for('magmaticsulfur'),
                  'RSAM_URL': url_for('rsam'),
                  'STRAIN_URL': url_for('strain'),
+                 'TRIGGERS_URL': url_for('triggers'),
                  'TREMOR_URL': url_for('tremor'),
                  'LASERLAVALEVEL_URL': url_for('laserlavalevel'),
                  'LAVALEVEL_URL': url_for('lavalevel'),
