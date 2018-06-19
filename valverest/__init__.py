@@ -18,6 +18,7 @@ from controller.serviceapi import ServiceAPI
 from controller.so2highresapi import SO2HighResAPI
 from controller.strainapi import StrainAPI
 from controller.tiltapi import TiltAPI
+from controller.triggersapi import TriggersAPI
 from controller.tremorapi import TremorAPI
 from valverest.database import db, db2, db3, db4, db5, db6, db7, db8, db9
 import logging
@@ -53,6 +54,7 @@ def create_app(*args, **kwargs):
     api.add_resource(SO2HighResAPI, '/api/so2highres', endpoint = 'so2highres')
     api.add_resource(StrainAPI, '/api/strain', endpoint = 'strain')
     api.add_resource(TiltAPI, '/api/tilt', endpoint = 'tilt')
+    api.add_resource(TriggersAPI, '/api/triggers', endpoint = 'triggers')
     api.add_resource(TremorAPI, '/api/tremor', endpoint = 'tremor')
     logging.basicConfig(filename='%s' % app.config['LOGFILE'], level=logging.DEBUG)
     return app
