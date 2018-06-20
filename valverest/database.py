@@ -15,10 +15,10 @@ db4 = SQLAlchemy()
 # RSAM and LavaLevel
 db5 = SQLAlchemy()
 
-# Strain
+# Strain & Triggers
 db6 = SQLAlchemy()
 
-# GPS & LaserLavaLevel
+# GPS
 db7 = SQLAlchemy()
 
 # LaserLavaLevel
@@ -26,3 +26,6 @@ db8 = SQLAlchemy()
 
 # SO2HighRes
 db9 = SQLAlchemy()
+
+# RTNet
+db10 = SQLAlchemy()
