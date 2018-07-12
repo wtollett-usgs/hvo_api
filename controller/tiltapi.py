@@ -101,6 +101,9 @@ class TiltAPI(Resource):
                 except KeyError:
                     pass
                 data = q.all()
+
+                data = self.filter_nulls(data)
+
                 raw_output[channel] = map(self.create_initial_output, data)
 
                 # Adjust dates from j2ksec to actual datetime
@@ -130,6 +133,7 @@ class TiltAPI(Resource):
                     pass
                 data = db.session.execute(text(s), params=dict(dsint=interval, st=date_to_j2k(start, tz),
                                             et=date_to_j2k(end, tz), rid=args['rank'])).fetchall()
+                data = self.filter_nulls(data)
                 raw_output[channel] = map(self.create_initial_output, data)
                 for d in raw_output[channel]:
                     d['date'] = j2k_to_date(d['date'], tz).strftime('%Y-%m-%d %H:%M:%S.%f')
@@ -168,13 +172,11 @@ class TiltAPI(Resource):
                     continue
 
                 # Subtract means to get zero-based values
-                em = sum(filter(None, [x['east'] for x in data])) / len(filter(None, [x['east'] for x in data]))
-                nm = sum(filter(None, [x['north'] for x in data])) / len(filter(None, [x['north'] for x in data]))
+                em = sum([x['east'] for x in data]) / len(data)
+                nm = sum([x['north'] for x in data]) / len(data)
                 for i in data:
-                    if i['east']:
-                        i['east']  -= em
-                    if i['north']:
-                        i['north'] -= nm
+                    i['east']  -= em
+                    i['north'] -= nm
 
                 tr              = radians(azimuth)
                 rotation_matrix = matrix([[cos(tr), sin(tr)], [-sin(tr), cos(tr)]])
@@ -184,16 +186,15 @@ class TiltAPI(Resource):
                 oy = data[0]['north']
                 for i in data:
                     e, n = i['east'], i['north']
-                    if e and n:
-                        m    = matrix([[e, n]]) * rotation_matrix
-                        if any(x in args['series'] for x in ['radial', 'all']):
-                            i['radial'] = m.A[0][1]
-                        if any(x in args['series'] for x in ['tangential', 'all']):
-                            i['tangential'] = m.A[0][0]
-                        if any(x in args['series'] for x in ['magnitude', 'all']):
-                            i['magnitude'] = sqrt((e - ox) * (e - ox) + (n - oy) * (n - oy))
-                        if any(x in args['series'] for x in ['azimuth', 'all']):
-                            i['azimuth'] = atan2(n - oy, e - ox)
+                    m    = matrix([[e, n]]) * rotation_matrix
+                    if any(x in args['series'] for x in ['radial', 'all']):
+                        i['radial'] = m.A[0][1]
+                    if any(x in args['series'] for x in ['tangential', 'all']):
+                        i['tangential'] = m.A[0][0]
+                    if any(x in args['series'] for x in ['magnitude', 'all']):
+                        i['magnitude'] = sqrt((e - ox) * (e - ox) + (n - oy) * (n - oy))
+                    if any(x in args['series'] for x in ['azimuth', 'all']):
+                        i['azimuth'] = atan2(n - oy, e - ox)
 
                 # If east and/or north aren't in the series list, remove them from output
                 if not any(x in args['series'] for x in ['east', 'all']):
@@ -251,6 +252,14 @@ class TiltAPI(Resource):
         if 'rainfall' in data.keys():
             item['rainfall'] = data.rainfall
         return item
+
+    @staticmethod
+    def filter_nulls(data):
+        d2 = data[:]
+        for d in d2:
+            if not d.east:
+                data.remove(d)
+        return data
 
     @staticmethod
     def create_param_string():
