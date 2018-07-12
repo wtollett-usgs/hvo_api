@@ -168,11 +168,13 @@ class TiltAPI(Resource):
                     continue
 
                 # Subtract means to get zero-based values
-                em = sum([x['east'] for x in data]) / float(len(data))
-                nm = sum([x['north'] for x in data]) / float(len(data))
+                em = sum(filter(None, [x['east'] for x in data])) / len(filter(None, [x['east'] for x in data]))
+                nm = sum(filter(None, [x['north'] for x in data])) / len(filter(None, [x['north'] for x in data]))
                 for i in data:
-                    i['east']  -= em
-                    i['north'] -= nm
+                    if i['east']:
+                        i['east']  -= em
+                    if i['north']:
+                        i['north'] -= nm
 
                 tr              = radians(azimuth)
                 rotation_matrix = matrix([[cos(tr), sin(tr)], [-sin(tr), cos(tr)]])
@@ -182,15 +184,16 @@ class TiltAPI(Resource):
                 oy = data[0]['north']
                 for i in data:
                     e, n = i['east'], i['north']
-                    m    = matrix([[e, n]]) * rotation_matrix
-                    if any(x in args['series'] for x in ['radial', 'all']):
-                        i['radial'] = m.A[0][1]
-                    if any(x in args['series'] for x in ['tangential', 'all']):
-                        i['tangential'] = m.A[0][0]
-                    if any(x in args['series'] for x in ['magnitude', 'all']):
-                        i['magnitude'] = sqrt((e - ox) * (e - ox) + (n - oy) * (n - oy))
-                    if any(x in args['series'] for x in ['azimuth', 'all']):
-                        i['azimuth'] = atan2(n - oy, e - ox)
+                    if e and n:
+                        m    = matrix([[e, n]]) * rotation_matrix
+                        if any(x in args['series'] for x in ['radial', 'all']):
+                            i['radial'] = m.A[0][1]
+                        if any(x in args['series'] for x in ['tangential', 'all']):
+                            i['tangential'] = m.A[0][0]
+                        if any(x in args['series'] for x in ['magnitude', 'all']):
+                            i['magnitude'] = sqrt((e - ox) * (e - ox) + (n - oy) * (n - oy))
+                        if any(x in args['series'] for x in ['azimuth', 'all']):
+                            i['azimuth'] = atan2(n - oy, e - ox)
 
                 # If east and/or north aren't in the series list, remove them from output
                 if not any(x in args['series'] for x in ['east', 'all']):
