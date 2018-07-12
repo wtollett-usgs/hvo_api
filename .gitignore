@@ -4,3 +4,4 @@ __pycache_/
 .DS_Store
 error_log
 static/
+.vscode/
