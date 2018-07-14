@@ -3,6 +3,7 @@ from flask import request, current_app
 from flask_restful import Resource
 from json import loads as jsonload
 from logging import getLogger
+from requests.auth import HTTPBasicAuth
 
 import HTMLParser
 import pytz
@@ -20,12 +21,10 @@ class LogsAPI(Resource):
             current_app.config['RESTFUL_JSON'] = {}
 
         url = "https://hvointernal.wr.usgs.gov/hvo_logs/api/getposts"
-        headers = {'Authorization': ***REMOVED***}
 
         # Get data
-        req      = urllib2.Request(url, '', headers)
-        response = urllib2.urlopen(req)
-        items    = jsonload(response.read())
+        req      = requests.get(url, auth=HTTPBasicAuth('***REMOVED***', '***REMOVED***'))
+        items    = jsonload(req.content)
         output   = map(self.create_data_map, items.iteritems())
 
         return { 'posts': output }, 200
