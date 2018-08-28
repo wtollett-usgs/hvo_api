@@ -1,13 +1,12 @@
 from valverest.database import db10 as db
 from sqlalchemy.ext.declarative import declared_attr
 
-_tablenames = ['AHUP', 'ALEP', 'BLBP', 'BYRL', 'CALS', 'CNPK', 'CRIM', 'DEVL',
-               'EPLA', 'ERZ1', 'ERZ2', 'ERZ3', 'ERZ4', 'GOPM', 'HILR', 'HOLE',
-               'HOVE', 'HOVL', 'JCUZ', 'JOKA', 'KAEP', 'KAMO', 'KANE', 'KOSM',
-               'KTPM', 'MKAI', 'MLCC', 'MLPR', 'MLRD', 'MLSP', 'MMAU', 'MOKP',
-               'NANT', 'NPIT', 'NUPM', 'OKIT', 'OUTL', 'PG2R', 'PHAN', 'PKMU',
-               'PMAU', 'PUHI', 'PUOC', 'RADF', 'TOUO', 'UWEV', 'VO46', 'VO47',
-               'WAPM']
+_tablenames = ['69FL', '92YN', 'AHUP', 'ALEP', 'BDPK', 'BLBP', 'BYRL', 'CALS',
+               'CNPK', 'CRIM', 'DEVL', 'EPLA', 'ERZ1', 'ERZ2', 'ERZ3', 'ERZ4',
+               'HILR', 'HOVE', 'HOVL', 'JCUZ', 'JOKA', 'KAMO', 'KEAM', 'KIND',
+               'KOSM', 'MKAI', 'MLRD', 'MLSP', 'MOKP', 'NANT', 'NPIT', 'NUPM',
+               'OUTL', 'PG2R', 'PHAN', 'PKMU', 'PMAU', 'PUHI', 'PULU', 'PUOC',
+               'PWRL', 'TOUO', 'UWEV', 'V120', 'VO46', 'VO47', 'VSAS', 'WAPM']
 _ridkeys    = [db.ForeignKey(x + '.rid') for x in _tablenames]
 
 class RTNetBase(object):
