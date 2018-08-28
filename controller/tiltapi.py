@@ -257,7 +257,7 @@ class TiltAPI(Resource):
     def filter_nulls(data):
         d2 = data[:]
         for d in d2:
-            if not d.east:
+            if not d.east and not d.north:
                 data.remove(d)
         return data
 
