@@ -1,4 +1,4 @@
-from common_constants import MAX_LINES, DS_OPTIONS
+from .common_constants import MAX_LINES, DS_OPTIONS
 from flask import request, current_app
 from flask_restful import Resource, reqparse
 from math import atan, atan2, cos, degrees, fabs, pow as fpow, radians, sin, sqrt
@@ -55,7 +55,7 @@ class GPSAPI(Resource):
                     baseline = self.get_gps_data(bchannel, args, [start, end, tz])
                     data     = self.apply_baseline(baseline, data)
 
-                xyz, cov = self.to_enu(originllh[0], originllh[1], len(data['xyz'])/3, data['xyz'], data['cov'])
+                xyz, cov = self.to_enu(originllh[0], originllh[1], len(data['xyz'])//3, data['xyz'], data['cov'])
                 enurows  = self.column_3N_to_rows(xyz)
 
                 em = sum(enurows[x,0] for x in range(len(enurows))) / float(len(enurows))
@@ -267,8 +267,8 @@ class GPSAPI(Resource):
     @staticmethod
     def column_3N_to_rows(rm):
         """Rearranges columnar 3*Nx1 matrix to an Nx3 row matrix"""
-        r = matrix(zeros((len(rm)/3, 3)))
-        for i in range(len(rm)/3):
+        r = matrix(zeros((len(rm)//3, 3)))
+        for i in range(len(rm)//3):
             r[i, 0] = rm[i*3, 0]
             r[i, 1] = rm[i*3 + 1, 0]
             r[i, 2] = rm[i*3 + 2, 0]

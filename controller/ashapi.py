@@ -32,7 +32,7 @@ class AshAPI(Resource):
         else:
             starttime = args['starttime']
             endtime   = args['endtime']
-            timezone  = (args['timezone'].lower() == 'hst')
+            tz        = (args['timezone'].lower() == 'hst')
             sd,ed     = create_date_from_input(starttime, endtime, tz)
             jsd       = date_to_j2k(sd, tz)
             jed       = date_to_j2k(ed, tz)

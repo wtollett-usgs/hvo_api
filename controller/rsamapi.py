@@ -1,4 +1,4 @@
-from common_constants import MAX_LINES, DS_OPTIONS
+from .common_constants import MAX_LINES, DS_OPTIONS
 from flask import request, current_app
 from flask_restful import Resource, reqparse
 from sqlalchemy import func

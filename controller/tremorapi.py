@@ -13,7 +13,7 @@ class TremorAPI(Resource):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('methodid', type = int, required = True)
         self.reqparse.add_argument('starttime', type = str, required = True)
-        self.reqparse.add_argument('endtime', type = str, required = True)
+        self.reqparse.add_argument('endtime', type = str, required = False, default = 'now')
         self.reqparse.add_argument('retvals', type = str, required = False, default = 'all')
         self.reqparse.add_argument('region', type = str, required = False, default = 'all')
         self.reqparse.add_argument('timezone', type = str, required = False, default = 'hst')
@@ -113,7 +113,7 @@ class TremorAPI(Resource):
         params['starttime'] = { 'type': 'string', 'required': 'yes',
                                 'note': '',
                                 'format': 'yyyy[MMdd[hhmm]]' }
-        params['endtime']  = { 'type': 'string', 'required': 'yes', 'format': 'yyyy[MMdd[hhmm]]'}
+        params['endtime']  = { 'type': 'string', 'required': 'no', 'format': 'yyyy[MMdd[hhmm]]', 'default': 'now'}
         params['methodid'] = { 'type': 'integer', 'required': 'yes', 'note': ''}
         params['region']   = { 'type': 'string', 'required': 'no', 'default': 'all'}
         params['retvals']  = { 'type': 'string', 'required': 'no', 'default': 'all',
