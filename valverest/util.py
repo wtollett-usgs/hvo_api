@@ -11,7 +11,7 @@ def date_to_j2k(d, hst=False):
     d   -- Date to convert
     hst -- Timezone the date is in
     """
-    if isinstance(d, basestring):
+    if isinstance(d, str):
         d = datetime.strptime(d, "%Y-%m-%d %H:%M:%S")
 
     if hst:
