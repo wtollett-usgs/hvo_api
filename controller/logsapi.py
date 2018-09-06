@@ -1,14 +1,12 @@
 from datetime import datetime
 from flask import request, current_app
 from flask_restful import Resource
+from html.parser import HTMLParser
 from json import loads as jsonload
 from logging import getLogger
 from requests.auth import HTTPBasicAuth
 
-import HTMLParser
 import pytz
-import urllib
-import urllib2
 import requests
 import traceback
 
@@ -25,9 +23,9 @@ class LogsAPI(Resource):
         # Get data
         req      = requests.get(url, auth=HTTPBasicAuth('***REMOVED***', '***REMOVED***'))
         items    = jsonload(req.content)
-        output   = map(self.create_data_map, items.iteritems())
+        output   = map(self.create_data_map, items.items())
 
-        return { 'posts': output }, 200
+        return { 'posts': [*output] }, 200
 
     def post(self):
         lf = getLogger('file')

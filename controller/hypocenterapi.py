@@ -1,4 +1,4 @@
-from common_constants import MAX_LINES
+from .common_constants import MAX_LINES
 from flask import request, current_app
 from flask_restful import Resource, reqparse
 from model.hypocenter import Hypocenter
@@ -36,7 +36,7 @@ class HypocenterAPI(Resource):
         self.reqparse.add_argument('east', type = float, required = False)
         self.reqparse.add_argument('west', type = float, required = False)
         self.reqparse.add_argument('geo', type = str, required = False,
-                                   choices = _hawaii_coords.keys(), default = 'hawaii')
+                                   choices = [*_hawaii_coords.keys()], default = 'hawaii')
         self.reqparse.add_argument('rank', type = int, required = False, default = 0)
         self.reqparse.add_argument('starttime', type = str, required = True)
         self.reqparse.add_argument('endtime', type = str, required = False, default = 'now')
@@ -146,7 +146,7 @@ class HypocenterAPI(Resource):
                           'Either a set of N,S,E,W coordinates or a geo value must exist.'}
         params['geo'] = {'type': 'string', 'required': 'no', 'default': 'hawaii',
                         'note': 'Either a set of N,S,E,W coordinates or a geo value must exist.',
-                        'options': _hawaii_coords.keys() }
+                        'options': [*_hawaii_coords.keys()] }
         params['magmin'] = {'type': 'float', 'required': 'no', 'default': -2}
         params['magmax'] = {'type': 'float', 'required': 'no', 'default': 10}
         params['depthmin'] = {'type': 'float', 'required': 'no', 'default': 0}

@@ -1,4 +1,4 @@
-from common_constants import MAX_LINES, DS_OPTIONS
+from .common_constants import MAX_LINES, DS_OPTIONS
 from flask import request, current_app
 from flask_restful import Resource, reqparse
 from math import cos, sin, radians, sqrt, atan2
@@ -104,7 +104,7 @@ class TiltAPI(Resource):
 
                 data = self.filter_nulls(data)
 
-                raw_output[channel] = map(self.create_initial_output, data)
+                raw_output[channel] = [*map(self.create_initial_output, data)]
 
                 # Adjust dates from j2ksec to actual datetime
                 for d in raw_output[channel]:
@@ -134,7 +134,7 @@ class TiltAPI(Resource):
                 data = db.session.execute(text(s), params=dict(dsint=interval, st=date_to_j2k(start, tz),
                                             et=date_to_j2k(end, tz), rid=args['rank'])).fetchall()
                 data = self.filter_nulls(data)
-                raw_output[channel] = map(self.create_initial_output, data)
+                raw_output[channel] = [*map(self.create_initial_output, data)]
                 for d in raw_output[channel]:
                     d['date'] = j2k_to_date(d['date'], tz).strftime('%Y-%m-%d %H:%M:%S.%f')
             elif args['downsample'] == 'mean':
@@ -168,7 +168,7 @@ class TiltAPI(Resource):
                 else:
                     azimuth = args['azimuth'] % 360.0
                 
-                if len(data) == 0:
+                if len([*data]) == 0:
                     continue
 
                 # Subtract means to get zero-based values
