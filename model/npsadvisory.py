@@ -4,6 +4,7 @@ from sqlalchemy.ext.declarative import declared_attr
 _tablenames = ['HAVO_CHA', 'HAVO_CMP', 'HAVO_DEV', 'HAVO_KVC', 'HAVO_NAU',
                'HAVO_OBS', 'HAVO_PRK', 'HAVO_STE', 'HAVO_THU']
 _ridkeys = [db.ForeignKey(x + '.rid') for x in _tablenames]
+_tidkeys = [db.ForeignKey(x + '.tid') for x in _tablenames]
 
 
 class NPSAdvisoryBase(object):
@@ -29,6 +30,11 @@ class NPSAdvisoryBase(object):
     def rank(self):
         return db.relationship('NPSAdvisoryRank', uselist=False, viewonly=True)
 
+    @declared_attr
+    def translation(self):
+        return db.relationship('NPSAdvisoryTranslation', uselist=False,
+                               viewonly=True)
+
 
 class NPSAdvisoryRank(db.Model):
     __tablename__ = 'ranks'
@@ -37,6 +43,38 @@ class NPSAdvisoryRank(db.Model):
     rid = db.Column(db.Integer, *_ridkeys, primary_key=True)
     name = db.Column(db.String(24), unique=True)
     rank = db.Column(db.Integer)
+
+
+class NPSAdvisoryTranslation(db.Model):
+    __tablename__ = 'translations'
+    __bind_key__ = 'npsadvisory'
+
+    tid = db.Column(db.Integer, *_tidkeys, primary_key=True)
+    name = db.Column(db.String(255))
+    cavgso2 = db.Column(db.Float)
+    davgso2 = db.Column(db.Float)
+    cpm25 = db.Column(db.Float)
+    dpm25 = db.Column(db.Float)
+    cwindspeed = db.Column(db.Float)
+    dwindspeed = db.Column(db.Float)
+    cwinddir = db.Column(db.Float)
+    dwinddir = db.Column(db.Float)
+    cwinddirsd = db.Column(db.Float)
+    dwinddirsd = db.Column(db.Float)
+    ctemperature = db.Column(db.Float)
+    dtemperature = db.Column(db.Float)
+    chumidity = db.Column(db.Float)
+    dhumidity = db.Column(db.Float)
+    cpressure = db.Column(db.Float)
+    dpressure = db.Column(db.Float)
+    crainfall = db.Column(db.Float)
+    drainfall = db.Column(db.Float)
+    cinsttemp = db.Column(db.Float)
+    dinsttemp = db.Column(db.Float)
+    cinstvolt = db.Column(db.Float)
+    dinstvolt = db.Column(db.Float)
+    ccal = db.Column(db.Float)
+    dcal = db.Column(db.Float)
 
 
 for name in _tablenames:

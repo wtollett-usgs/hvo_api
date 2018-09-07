@@ -3,6 +3,7 @@ from sqlalchemy.ext.declarative import declared_attr
 
 _tablenames = ['COC', 'LERZ', 'SUM', 'SUMDFW']
 _ridkeys = [db.ForeignKey(x + '.rid') for x in _tablenames]
+_tidkeys = [db.ForeignKey(x + '.tid') for x in _tablenames]
 
 
 class SO2EmissionsBase(object):
@@ -20,7 +21,8 @@ class SO2EmissionsBase(object):
 
     @declared_attr
     def rank(self):
-        return db.relationship('SO2EmissionsRank', uselist=False, viewonly=True)
+        return db.relationship('SO2EmissionsRank', uselist=False,
+                               viewonly=True)
 
 
 class SO2EmissionsRank(db.Model):
