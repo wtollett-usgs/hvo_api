@@ -32,3 +32,6 @@ db10 = SQLAlchemy()
 
 # SO2Emissions
 db11 = SQLAlchemy()
+
+# NPS Advisory
+db12 = SQLAlchemy()
