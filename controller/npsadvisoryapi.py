@@ -83,7 +83,11 @@ class NPSAdvisoryAPI(Resource):
                      'rank': d.rank.name}
 
                 for i in args['series'].split(','):
-                    a[i] = getattr(d, i.lower())
+                    val = getattr(d, i.lower())
+                    if val:
+                        val = val * getattr(d.translation, f'c{i.lower()}') +\
+                              getattr(d.translation, f'd{i.lower()}')
+                    a[i] = val
                 List(a)
             count += len(data)
         return {'nr': count,
