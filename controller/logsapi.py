@@ -39,7 +39,7 @@ class LogsAPI(Resource):
             send_files = {}
             if arg:
                 lf.debug("LOGS::form values from HANS")
-                h = HTMLParser.HTMLParser()
+                h = HTMLParser()
 
                 #s = 'Attempting to insert log entry for postdate=%s, obsdate=%s, user=%s, subject=%s'
                 #lf.debug(s % (arg['postdate'], arg['obsdate'], arg['user'], arg['subject']))
