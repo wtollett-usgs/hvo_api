@@ -8,12 +8,9 @@ from controller.fileapi import FileAPI
 from controller.flyspecapi import FlyspecAPI
 from controller.gpsapi import GPSAPI
 from controller.hypocenterapi import HypocenterAPI
-from controller.incompatiblesapi import IncompatiblesAPI
 from controller.laserlavalevelapi import LaserLavaLevelAPI
 from controller.lavalevelapi import LavaLevelAPI
 from controller.logsapi import LogsAPI
-from controller.magmaticsulfurapi import MagmaticSulfurAPI
-from controller.mgosystematicsapi import MgOSystematicsAPI
 from controller.npsadvisoryapi import NPSAdvisoryAPI
 from controller.rsamapi import RSAMAPI
 from controller.rtnetapi import RTNetAPI
@@ -54,15 +51,10 @@ def create_app(*args, **kwargs):
     api.add_resource(FileAPI, '/api/file', endpoint='file')
     api.add_resource(GPSAPI, '/api/gps', endpoint='gps')
     api.add_resource(HypocenterAPI, '/api/hypocenter', endpoint='hypocenter')
-    api.add_resource(IncompatiblesAPI, '/api/incompatibles',
-                     endpoint='incompatibles')
     api.add_resource(LaserLavaLevelAPI, '/api/laserlavalevel',
                      endpoint='laserlavalevel')
     api.add_resource(LavaLevelAPI, '/api/lavalevel', endpoint='lavalevel')
     api.add_resource(LogsAPI, '/api/logs', endpoint='logs')
-    api.add_resource(MagmaticSulfurAPI, '/api/magmaticsulfur',
-                     endpoint='magmaticsulfur')
-    api.add_resource(MgOSystematicsAPI, '/api/mgosys', endpoint='mgosys')
     api.add_resource(NPSAdvisoryAPI, '/api/npsadvisory',
                      endpoint='npsadvisory')
     api.add_resource(RSAMAPI, '/api/rsam', endpoint='rsam')
