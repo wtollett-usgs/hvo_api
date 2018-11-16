@@ -3,13 +3,13 @@ from flask_sqlalchemy import SQLAlchemy
 # Ash and EDXRF and Tremor
 db = SQLAlchemy()
 
-# MgO Systematics and Tilt
+# Tilt
 db2 = SQLAlchemy()
 
-# Olivine Incompatible Elements and Flyspec
+# Flyspec
 db3 = SQLAlchemy()
 
-# Magmatic Sulfur and Hypocenters
+# Hypocenters
 db4 = SQLAlchemy()
 
 # RSAM and LavaLevel
