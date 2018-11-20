@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from valverest.database import db6 as db
 
 _tablenames = ['2816$HWZ$NP', 'AHUD$EWZ$HV', 'AIND$HWZ$HV', 'ALEP$EWZ$HV',
@@ -15,13 +16,16 @@ _tablenames = ['2816$HWZ$NP', 'AHUD$EWZ$HV', 'AIND$HWZ$HV', 'ALEP$EWZ$HV',
                'SWRD$EWZ$HV', 'TOUO$HWZ$HV', 'UWB$HWZ$HV', 'WAPM$EWZ$HV',
                'WILD$EWZ$HV', 'WRM$HWZ$HV']
 
+
 class TriggersBase(object):
     __bind_key__ = 'triggers'
 
     timestamp = db.Column('j2ksec', db.Float, primary_key=True)
-    triggers  = db.Column(db.Float)
+    triggers = db.Column(db.Float)
+
 
 for name in _tablenames:
-    c = type(name.upper(), (TriggersBase, db.Model), { '__bind_key__': 'triggers', '__tablename__': name })
+    c = type(name.upper(), (TriggersBase, db.Model),
+             {'__bind_key__': 'triggers', '__tablename__': name})
     globals()[c.__name__] = c
     del c

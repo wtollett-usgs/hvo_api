@@ -5,6 +5,7 @@ from time import mktime
 gmt_j2koffset = 946764000
 hst_j2koffset = 946728000
 
+
 def date_to_j2k(d, hst=False):
     """
     Given a date, return the J2KSeconds value
@@ -19,6 +20,7 @@ def date_to_j2k(d, hst=False):
     else:
         return (mktime(d.timetuple())) - gmt_j2koffset
 
+
 def j2k_to_date(j2k, hst=False):
     """
     Return the date for the passed in j2k value.
@@ -29,6 +31,7 @@ def j2k_to_date(j2k, hst=False):
         return datetime.fromtimestamp(j2k + hst_j2koffset)
     else:
         return datetime.fromtimestamp(j2k + gmt_j2koffset)
+
 
 def create_date_from_input(start, end, hst):
     if start.startswith('-'):
@@ -53,6 +56,7 @@ def create_date_from_input(start, end, hst):
         e = datetime.strptime(end, "%Y%m%d%H%M%S%f")
     return s, e
 
+
 def create_relative_date(s):
     period = s[-1:]
     time = int(s[1:-1]) * -1
@@ -70,13 +74,15 @@ def create_relative_date(s):
         label = 'months'
     elif period == 'y':
         label = 'years'
-    kwargs = { label: time }
+    kwargs = {label: time}
     return datetime.now() + relativedelta(**kwargs)
 
+
 def clean_input(arg):
-    for key,val in arg.iteritems():
-        arg[key] = val.strip() if isinstance(val, basestring) else val
+    for key, val in arg.iteritems():
+        arg[key] = val.strip() if isinstance(val, str) else val
     return arg
+
 
 def str_to_date(s):
     return mktime(datetime.strptime(s, "%Y-%m-%d %H:%M:%S.%f").timetuple())
