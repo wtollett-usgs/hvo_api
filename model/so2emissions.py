@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from valverest.database import db11 as db
 from sqlalchemy.ext.declarative import declared_attr
 

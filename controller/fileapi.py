@@ -1,4 +1,5 @@
-from flask import request, current_app, send_from_directory
+# -*- coding: utf-8 -*-
+from flask import request, current_app as app
 from flask_restful import Resource, reqparse
 from base64 import b64encode
 from json import loads as jsonloads
@@ -6,11 +7,13 @@ from os.path import isfile
 
 import hashlib
 
+
 class FileAPI(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('type', type = str, required = False, default = 'static')
-        self.reqparse.add_argument('name', type = str, required = True)
+        self.reqparse.add_argument('type', type=str, required=False,
+                                   default='static')
+        self.reqparse.add_argument('name', type=str, required=True)
         super(FileAPI, self).__init__()
 
     def get(self):
@@ -18,12 +21,12 @@ class FileAPI(Resource):
         if not request.args:
             return self.create_param_string(), 200
 
-        if not current_app.debug:
-            current_app.config['RESTFUL_JSON'] = {}
+        if not app.debug:
+            app.config['RESTFUL_JSON'] = {}
 
-        args   = self.reqparse.parse_args()
+        args = self.reqparse.parse_args()
         if args['type'] == 'static':
-            with open('%s/%s' % (current_app.config['STATIC_DIR'], args['name'])) as file:
+            with open(f"{app.config['STATIC_DIR']}/{args['name']}") as file:
                 str = jsonloads(file.read())
             return str, 200
         elif args['type'] == 'cam':
@@ -33,31 +36,33 @@ class FileAPI(Resource):
                 image = "/lamp/cams/%s/images/PAN.jpg" % args['name']
             with open(image, "rb") as file:
                 str = b64encode(file.read())
-            return { 'img': str }, 200
+            return {'img': str}, 200
         elif args['type'] == 'hash':
             blocksize = 65536
             hasher = hashlib.sha1()
-            with open('%s/%s' % (current_app.config['STATIC_DIR'], args['name'])) as file:
+            with open(f"{app.config['STATIC_DIR']}/{args['name']}") as file:
                 buf = file.read(blocksize)
                 while len(buf) > 0:
                     hasher.update(buf)
                     buf = file.read(blocksize)
-            return { 'hash': hasher.hexdigest() }, 200
+            return {'hash': hasher.hexdigest()}, 200
         elif args['type'] == 'logs':
-            with open('%s/%s' % (current_app.config['UPLOADS_DIR'], args['name'])) as file:
+            with open(f"{app.config['UPLOADS_DIR']}/{args['name']}") as file:
                 str = b64encode(file.read())
-            return { 'file': str }, 200
+            return {'file': str}, 200
 
     @staticmethod
     def create_param_string():
-        if not current_app.debug:
-            settings = current_app.config.get('RESTFUL_JSON', {})
+        if not app.debug:
+            settings = app.config.get('RESTFUL_JSON', {})
             settings.setdefault('indent', 4)
             settings.setdefault('sort_keys', True)
-            current_app.config['RESTFUL_JSON'] = settings
+            app.config['RESTFUL_JSON'] = settings
 
         params = {}
-        params['type'] = { 'type': 'string', 'required': 'no', 'options': 'static, hash, img, cam',
-                         'note': 'What type of file to return.'}
-        params['name'] = { 'type': 'string', 'required': 'yes', 'note': 'Name of file to return'}
+        params['type'] = {'type': 'string', 'required': 'no',
+                          'options': 'static, hash, img, cam',
+                          'note': 'What type of file to return.'}
+        params['name'] = {'type': 'string', 'required': 'yes',
+                          'note': 'Name of file to return'}
         return params

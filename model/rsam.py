@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from valverest.database import db5 as db
 
 _tablenames = ['2836$HNZ$NP', 'AHUD$BDF$HV', 'AHUD$EHZ$HV', 'AHUD$EWZ$HV',
@@ -41,13 +42,16 @@ _tablenames = ['2836$HNZ$NP', 'AHUD$BDF$HV', 'AHUD$EHZ$HV', 'AHUD$EWZ$HV',
                'WILD$EWZ$HV', 'WMR$EHZ$PT', 'WOOD$EHZ$HV', 'WRM$HHZ$HV',
                'WRM$HWZ$HV']
 
+
 class RSAMBase(object):
     __bind_key__ = 'rsam'
 
     timestamp = db.Column('j2ksec', db.Float, primary_key=True)
-    rsam      = db.Column(db.Float)
+    rsam = db.Column(db.Float)
+
 
 for name in _tablenames:
-    c = type(name.upper(), (RSAMBase, db.Model), { '__bind_key__': 'rsam', '__tablename__': name })
+    c = type(name.upper(), (RSAMBase, db.Model),
+             {'__bind_key__': 'rsam', '__tablename__': name})
     globals()[c.__name__] = c
     del c

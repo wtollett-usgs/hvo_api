@@ -1,4 +1,5 @@
-from .common_constants import DFMT, MAX_LINES
+# -*- coding: utf-8 -*-
+from .common_constants import SFMT, MAX_LINES
 from flask import request, current_app
 from flask_restful import Resource, reqparse
 from valverest.util import create_date_from_input, date_to_j2k, j2k_to_date
@@ -33,8 +34,8 @@ class SO2EmissionsAPI(Resource):
         args = self.reqparse.parse_args()
 
         channels = args['channel'].split(',')
-        unknown = set([x.upper() for x in channels]) \
-            .difference(so2emissions._tablenames)
+        unknown = (set([x.upper() for x in channels])
+                   .difference(so2emissions._tablenames))
         if len(unknown) > 0:
             return {'Error': f"unknown channel(s): {','.join(unknown)}"}
 
@@ -44,8 +45,8 @@ class SO2EmissionsAPI(Resource):
             return {'Error': f"unknown series: {','.join(unknown)}"}
 
         tz = (args['timezone'].lower() == 'hst')
-        start, end = create_date_from_input(args['starttime'], args['endtime'],
-                                            tz)
+        start, end = create_date_from_input(args['starttime'],
+                                            args['endtime'], tz)
         output = {}
         count = 0
 
@@ -56,7 +57,7 @@ class SO2EmissionsAPI(Resource):
 
             # Set up query filters
             queryclauses.append(cname.timestamp.between(date_to_j2k(start, tz),
-                                date_to_j2k(end, tz)))
+                                                        date_to_j2k(end, tz)))
 
             # Set up order by values
             orderby.append(cname.timestamp.asc())
@@ -78,7 +79,7 @@ class SO2EmissionsAPI(Resource):
             List = output[channel].append
 
             for d in data:
-                a = {'date': Date(d.timestamp, tz).strftime(DFMT),
+                a = {'date': Date(d.timestamp, tz).strftime(SFMT),
                      'rank': d.rank.name}
 
                 for i in args['series'].split(','):
