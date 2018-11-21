@@ -1,0 +1,24 @@
+RW_BASE = f"mysql+pymysql://user:pass@database.server/"
+RO_BASE = f"mysql+pymysql://ro_user:pass@database.server/"
+SQLALCHEMY_DATABASE_URI = f'{RW_BASE}ash'
+SQLALCHEMY_BINDS = {
+    'edxrf':          f'{RW_BASE}edxrf',
+    'flyspec':        f'{RO_BASE}flyspec',
+    'gps':            f'{RO_BASE}gps',
+    'hypocenter':     f'{RO_BASE}hypocenter',
+    'laserlavalevel': f'{RO_BASE}laserlavalevel',
+    'lavalevel':      f'{RO_BASE}lavalevel',
+    'npsadvisory':    f'{RO_BASE}npsadvisory',
+    'rsam':           f'{RO_BASE}rsam',
+    'rtnet':          f'{RO_BASE}rtnet',
+    'so2emissions':   f'{RO_BASE}so2emissions',
+    'so2highres':     f'{RO_BASE}so2highres',
+    'strain':         f'{RO_BASE}strain',
+    'tilt':           f'{RO_BASE}tilt',
+    'tremor':         f'{RO_BASE}tremor',
+    'triggers':       f'{RO_BASE}triggers'
+}
+LOGFILE = '/path/to/logfile'
+STATIC_DIR = '/path/to/static/files/dir'
+UPLOADS_DIR = '/path/to/logs/uploads'
+SQLALCHEMY_TRACK_MODIFICATIONS = False

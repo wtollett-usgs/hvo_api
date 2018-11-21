@@ -42,7 +42,7 @@ class LogsAPI(Resource):
             # TODO: Convert Google Forms to send form values rather than json
             url = f"{os.getenv('LOGS_BASE')}api/addpost.form"
             enc = be(f"{os.getenv('LOGS_USER')}:{os.getenv('LOGS_PW')}")
-            headers = {'Authorization': f***REMOVED***}
+            headers = {'Authorization': f'Basic {enc}'}
             arg = request.form
             files = ''
             send_files = {}
