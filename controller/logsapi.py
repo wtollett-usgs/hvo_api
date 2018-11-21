@@ -23,7 +23,7 @@ class LogsAPI(Resource):
         if not current_app.debug:
             current_app.config['RESTFUL_JSON'] = {}
 
-        url = f"{os.getenv('LOGS_BASE')}api/getposts"
+        url = f"{current_app.config['LOGS_BASE']}api/getposts"
 
         # Get data
         user = os.getenv('LOGS_USER')
@@ -40,7 +40,7 @@ class LogsAPI(Resource):
             # Vales from HANS come in form format, while values from Google
             # Forms come in json
             # TODO: Convert Google Forms to send form values rather than json
-            url = f"{os.getenv('LOGS_BASE')}api/addpost.form"
+            url = f"{current_app.config['LOGS_BASE']}api/addpost.form"
             enc = be(f"{os.getenv('LOGS_USER')}:{os.getenv('LOGS_PW')}")
             headers = {'Authorization': f'Basic {enc}'}
             arg = request.form
