@@ -51,9 +51,9 @@ class LogsAPI(Resource):
                 h = HTMLParser()
 
                 body = h.unescape(arg['body'])
-                lf.debug("LOGS::body: %s" % body)
+                lf.debug(f"LOGS::body: {body}")
                 files = request.files.getlist("file")
-                lf.debug("LOGS::files %s" % files)
+                lf.debug(f"LOGS::files {files}")
 
                 values = {'email': arg['email'] if 'email' in arg else '',
                           'username': arg['username'] if 'username' in arg
@@ -64,9 +64,9 @@ class LogsAPI(Resource):
                           'post_type': arg['post_type']}
 
                 for idx, f in enumerate(files):
-                    field = "file_%d" % idx
-                    f.save("/tmp/%s" % f.filename)
-                    send_files[field] = open("/tmp/%s" % f.filename, 'rb')
+                    field = f"file_{idx}"
+                    f.save(f"/tmp/{f.filename}")
+                    send_files[field] = open(f"/tmp/{f.filename}", 'rb')
             else:
                 arg = jsonload(request.data)
 
@@ -89,7 +89,7 @@ class LogsAPI(Resource):
                 values['obsdate'] = hidt.strftime(SFMT)
                 values['keywords[]'] = 'Earthquake'
 
-            lf.debug("LOGS::%s" % values)
+            lf.debug(f"LOGS::{values}")
 
 #            if 'appname' in arg:
 #                if arg['appname'] == 'test':
@@ -97,10 +97,10 @@ class LogsAPI(Resource):
 
             response = requests.post(url, data=values,
                                      headers=headers, files=send_files)
-            lf.debug("LOGS::%s" % response.json)
+            lf.debug(f"LOGS::{response.json}")
             return {'status': 'ok'}, 201
         except Exception:
-            lf.debug("LOGS::%s" % traceback.format_exc())
+            lf.debug(f"LOGS::{traceback.format_exc()}")
             return {'status': 'error'}, 400
 
     @staticmethod
