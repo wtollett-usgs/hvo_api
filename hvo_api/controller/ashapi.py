@@ -88,7 +88,7 @@ class AshAPI(Resource):
             lf.debug("Item added/updated")
             return {'status': 'ok'}, 201
         except exc.SQLAlchemyError as e:
-            lf.debug("Insert failed")
+            lf.debug(f"Insert failed: {e}")
             return {'status': 'error inserting item, check logs'}, 200
 
     @staticmethod

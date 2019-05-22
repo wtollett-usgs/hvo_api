@@ -117,6 +117,7 @@ class EDXRFAPI(Resource):
             lf.debug('EDXRF::Item added')
             return {'status': 'ok'}, 201
         except exc.SQLAlchemyError as e:
+            lf.error(e)
             return {'status': 'error'}, 400
 
     @staticmethod
