@@ -46,10 +46,6 @@ class FileAPI(Resource):
                     hasher.update(buf)
                     buf = file.read(blocksize)
             return {'hash': hasher.hexdigest()}, 200
-        elif args['type'] == 'logs':
-            with open(f"{app.config['UPLOADS_DIR']}/{args['name']}") as file:
-                str = b64encode(file.read())
-            return {'file': str}, 200
 
     @staticmethod
     def create_param_string():
