@@ -20,5 +20,4 @@ SQLALCHEMY_BINDS = {
 }
 LOGFILE = '/path/to/logfile'
 STATIC_DIR = '/path/to/static/files/dir'
-UPLOADS_DIR = '/path/to/logs/uploads'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
