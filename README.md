@@ -2,6 +2,8 @@
 ---
 HVO-API is a companion application for the [vsc-vdx](https://github.com/usgs/vsc-vdx) project. The idea is to be able to extract JSON data from VDX databases (and a few other random sources) using easily constructable URLs. Initially written as a way to learn the datasets in use at HVO, it's been continually expanded as users have requested access to different data.
 
+The app can be run as a desktop flask app via app.py, or via a WSGI server with the run.wsgi script.
+
 ## Requirements
 ---
 At a high level, you'd need the following to get any use out of this codebase:
