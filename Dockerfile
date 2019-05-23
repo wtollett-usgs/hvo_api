@@ -21,9 +21,4 @@ RUN groupadd -g 48 apache \
 COPY run.sh .
 RUN chown -R apache:www /app/hvo_api && chmod +x run.sh
 
-ARG LU
-ARG LP
-ENV LOGS_USER=$LU \
-    LOGS_PW=$LP
-
 ENTRYPOINT [ "./run.sh" ]
