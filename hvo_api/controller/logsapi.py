@@ -26,8 +26,8 @@ class LogsAPI(Resource):
         url = f"{current_app.config['LOGS_BASE']}api/getposts"
 
         # Get data
-        user = os.getenv('LOGS_USER')
-        pw = os.getenv('LOGS_PW')
+        user = request.authorization.username
+        pw = request.authorization.password
         req = requests.get(url, auth=HTTPBasicAuth(user, pw))
         items = jsonload(req.content)
         output = map(self.create_data_map, items.items())
@@ -40,8 +40,10 @@ class LogsAPI(Resource):
             # Vales from HANS come in form format, while values from Google
             # Forms come in json
             # TODO: Convert Google Forms to send form values rather than json
+            user = request.authorization.username
+            pw = request.authorization.password
             url = f"{current_app.config['LOGS_BASE']}api/addpost.form"
-            enc = be(f"{os.getenv('LOGS_USER')}:{os.getenv('LOGS_PW')}")
+            enc = be(f"{user}:{pw}")
             headers = {'Authorization': f'Basic {enc}'}
             arg = request.form
             files = ''
