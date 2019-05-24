@@ -42,7 +42,8 @@ class LogsAPI(Resource):
             user = request.authorization.username
             pw = request.authorization.password
             url = f"{current_app.config['LOGS_BASE']}api/addpost.form"
-            enc = be(f"{user}:{pw}")
+            astr = f"{user}:{pw}"
+            enc = be(astr.encode())
             headers = {'Authorization': f'Basic {enc}'}
             arg = request.form
             files = ''
