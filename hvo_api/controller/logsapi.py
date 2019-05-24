@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from .common_constants import SFMT
-from base64 import b64encode as be
 from datetime import datetime
 from flask import request, current_app
 from flask_restful import Resource
@@ -9,6 +8,7 @@ from json import loads as jsonload
 from logging import getLogger
 from requests.auth import HTTPBasicAuth
 
+import os
 import pytz
 import requests
 import traceback
@@ -39,12 +39,9 @@ class LogsAPI(Resource):
             # Vales from HANS come in form format, while values from Google
             # Forms come in json
             # TODO: Convert Google Forms to send form values rather than json
-            user = request.authorization.username
-            pw = request.authorization.password
+            user = os.getenv('LOGS_USER')
+            pw = os.getenv('LOGS_PW')
             url = f"{current_app.config['LOGS_BASE']}api/addpost.form"
-            astr = f"{user}:{pw}"
-            enc = be(astr.encode())
-            headers = {'Authorization': f'Basic {enc}'}
             arg = request.form
             files = ''
             send_files = {}
@@ -98,7 +95,8 @@ class LogsAPI(Resource):
 #                    return { 'status': 'ok' }, 201
 
             response = requests.post(url, data=values,
-                                     headers=headers, files=send_files)
+                                     auth=HTTPBasicAuth(user, pw),
+                                     files=send_files)
             lf.debug(f"LOGS::{response.json}")
             return {'status': 'ok'}, 201
         except Exception:
