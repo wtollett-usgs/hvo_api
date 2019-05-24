@@ -9,6 +9,7 @@ from json import loads as jsonload
 from logging import getLogger
 from requests.auth import HTTPBasicAuth
 
+import os
 import pytz
 import requests
 import traceback
@@ -39,10 +40,10 @@ class LogsAPI(Resource):
             # Vales from HANS come in form format, while values from Google
             # Forms come in json
             # TODO: Convert Google Forms to send form values rather than json
-            user = request.authorization.username
-            pw = request.authorization.password
+            user = os.getenv('LOGS_USER')
+            pw = os.getenv('LOGS_PW')
             url = f"{current_app.config['LOGS_BASE']}api/addpost.form"
-            astr = f"{user}:{pw}"
+            astr = f'{user}:{pw}'
             enc = be(astr.encode())
             headers = {'Authorization': f'Basic {enc}'}
             arg = request.form
