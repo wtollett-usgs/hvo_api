@@ -9,6 +9,7 @@ class ServiceAPI(Resource):
                 'EDXRF_URL': url_for('edxrf'),
                 'FLYSPEC_URL': url_for('flyspec'),
                 'GPS_URL': url_for('gps'),
+                'GRAVITY_URL': url_for('gravity'),
                 'HYPOCENTER_URL': url_for('hypocenter'),
                 'LASERLAVALEVEL_URL': url_for('laserlavalevel'),
                 'LAVALEVEL_URL': url_for('lavalevel'),

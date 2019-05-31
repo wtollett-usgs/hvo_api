@@ -35,3 +35,6 @@ db11 = SQLAlchemy()
 
 # NPS Advisory
 db12 = SQLAlchemy()
+
+# Gravity
+db13 = SQLAlchemy()
