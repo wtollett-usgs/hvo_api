@@ -7,6 +7,7 @@ from controller.edxrfapi import EDXRFAPI
 from controller.fileapi import FileAPI
 from controller.flyspecapi import FlyspecAPI
 from controller.gpsapi import GPSAPI
+from controller.gravityapi import GravityAPI
 from controller.hypocenterapi import HypocenterAPI
 from controller.laserlavalevelapi import LaserLavaLevelAPI
 from controller.lavalevelapi import LavaLevelAPI
@@ -23,7 +24,8 @@ from controller.tremorapi import TremorAPI
 from controller.triggersapi import TriggersAPI
 from valverest.database import (
     db, db2, db3, db4, db5, db6,
-    db7, db8, db9, db10, db11, db12
+    db7, db8, db9, db10, db11, db12,
+    db13
 )
 
 
@@ -44,12 +46,14 @@ def create_app(*args, **kwargs):
     db10.init_app(app)
     db11.init_app(app)
     db12.init_app(app)
+    db13.init_app(app)
     api.add_resource(ServiceAPI, '/', '/api')
     api.add_resource(AshAPI, '/api/ash', endpoint='ash')
     api.add_resource(EDXRFAPI, '/api/edxrf', endpoint='edxrf')
     api.add_resource(FlyspecAPI, '/api/flyspec', endpoint='flyspec')
     api.add_resource(FileAPI, '/api/file', endpoint='file')
     api.add_resource(GPSAPI, '/api/gps', endpoint='gps')
+    api.add_resource(GravityAPI, '/api/gravity', endpoint='gravity')
     api.add_resource(HypocenterAPI, '/api/hypocenter', endpoint='hypocenter')
     api.add_resource(LaserLavaLevelAPI, '/api/laserlavalevel',
                      endpoint='laserlavalevel')
