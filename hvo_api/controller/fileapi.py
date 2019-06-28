@@ -35,8 +35,12 @@ class FileAPI(Resource):
             elif isfile("/lamp/cams/%s/images/PAN.jpg" % args['name']):
                 image = "/lamp/cams/%s/images/PAN.jpg" % args['name']
             with open(image, "rb") as file:
-                str = b64encode(file.read())
-            return {'img': str}, 200
+                str = b64encode(file.read()).decode('utf-8')
+            info  = "/lamp/cams/%s/images/js.js" % args['name']
+            with open(info, 'r') as file:
+                line = file.readline()
+                date = line.split('"')[1]
+            return {'img': str, 'date': date}, 200
         elif args['type'] == 'hash':
             blocksize = 65536
             hasher = hashlib.sha1()
