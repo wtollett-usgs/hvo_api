@@ -36,7 +36,7 @@ class FileAPI(Resource):
                 image = "/lamp/cams/%s/images/PAN.jpg" % args['name']
             with open(image, "rb") as file:
                 str = b64encode(file.read()).decode('utf-8')
-            info  = "/lamp/cams/%s/images/js.js" % args['name']
+            info = "/lamp/cams/%s/images/js.js" % args['name']
             with open(info, 'r') as file:
                 line = file.readline()
                 date = line.split('"')[1]
