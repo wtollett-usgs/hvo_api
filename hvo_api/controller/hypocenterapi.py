@@ -140,7 +140,7 @@ class HypocenterAPI(Resource):
         Date = j2k_to_date
         List = output.append
         for d in data:
-            List({'date': Date(d.timestamp, tz).strftime(FFMT),
+            List({'eid': d.eid, 'date': Date(d.timestamp, tz).strftime(FFMT),
                   'rank': d.rank.name, 'depth': d.depth, 'lat': d.lat,
                   'lon': d.lon, 'prefMag': d.prefmag})
         return {'nr': len(data),
