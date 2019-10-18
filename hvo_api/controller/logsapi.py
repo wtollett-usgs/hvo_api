@@ -90,9 +90,10 @@ class LogsAPI(Resource):
 
             lf.debug(f"LOGS::{values}")
 
-#            if 'appname' in arg:
-#                if arg['appname'] == 'test':
-#                    return { 'status': 'ok' }, 201
+            if 'appname' in arg:
+                if arg['appname'] == 'test':
+                    lf.debug(f"TESTRETURN")
+                    return {'status': 'ok'}, 201
 
             response = requests.post(url, data=values,
                                      auth=HTTPBasicAuth(user, pw),
