@@ -2,7 +2,7 @@
 from .common_constants import MAX_LINES, FFMT
 from flask import request, current_app
 from flask_restful import Resource, reqparse
-from model.hypocenter import Hypocenter
+from model.hypocenter import Hypocenter, HypocenterRank
 from sys import float_info
 from valverest.util import create_date_from_input, date_to_j2k, j2k_to_date
 
@@ -156,6 +156,8 @@ class HypocenterAPI(Resource):
             settings.setdefault('sort_keys', True)
             current_app.config['RESTFUL_JSON'] = settings
 
+        ranks = [{'rid': x.rid, 'name': x.name}
+                 for x in HypocenterRank.query.all()]
         params = {}
         params['starttime'] = {'type': 'string', 'required': 'yes',
                                'note': ('Will also accept things like -6m '
@@ -165,7 +167,8 @@ class HypocenterAPI(Resource):
                              'format': 'yyyy[MMdd[hhmm]]', 'default': 'now'}
         params['rank'] = {'type': 'int', 'required': 'no', 'default': 0,
                           'note': ('A rank of 0 will return the best '
-                                   'possible rank.')}
+                                   'possible rank.'),
+                          'options': ranks}
         params['timezone'] = {'type': 'string', 'required': 'no',
                               'default': 'hst'}
         params['north'] = {'type': 'float', 'required': 'no',

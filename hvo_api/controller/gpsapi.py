@@ -386,6 +386,7 @@ class GPSAPI(Resource):
             current_app.config['RESTFUL_JSON'] = settings
 
         gps_channels = [x.code for x in GPSChannel.query.all()]
+        ranks = [{'rid': x.rid, 'name': x.name} for x in GPSRank.query.all()]
         params = {}
         params['channel'] = {'type': 'string', 'required': 'yes',
                              'note': 'Can be comma-separated list.',
@@ -401,7 +402,8 @@ class GPSAPI(Resource):
                              'format': 'yyyy[MMdd[hhmm]]', 'default': 'now'}
         params['rank'] = {'type': 'int', 'required': 'no', 'default': 8,
                           'note': ('A rank of 0 will return the best '
-                                   'possible rank.')}
+                                   'possible rank.'),
+                          'options': ranks}
         params['timezone'] = {'type': 'string', 'required': 'no',
                               'default': 'hst'}
         params['series'] = {'type': 'string', 'required': 'no',
