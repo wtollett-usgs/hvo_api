@@ -214,9 +214,9 @@ class GPSAPI(Resource):
             res = []
             tmpj2k = 0
             for d in data:
-                if not tmpj2k == d.timestamp:
+                if not tmpj2k == d.source.avgdate:
                     res.append(d)
-                    tmpj2k = d.timestamp
+                    tmpj2k = d.source.avgdate
             return GPSAPI.set_to_list(res)
         else:
             return GPSAPI.set_to_list(data)
