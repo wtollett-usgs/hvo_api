@@ -3,7 +3,11 @@ FROM python:3.6-slim
 LABEL maintainer="wtollett@usgs.gov"
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    apache2 apache2-dev
+    apache2 apache2-dev ca-certificates
+
+COPY DOIRootCA2.cer /usr/local/share/ca-certificates/DOIRootCA2.crt
+RUN update-ca-certificates
+ENV PIP_CERT=/etc/ssl/certs/ca-certificates.crt
 
 # Create User/Group
 RUN groupadd -g 48 apache \
