@@ -317,6 +317,8 @@ class TiltAPI(Resource):
             settings.setdefault('sort_keys', True)
             current_app.config['RESTFUL_JSON'] = settings
 
+        ranks = [{'rid': x.rid, 'name': x.name}
+                 for x in tilt.TiltRank.query.all()]
         params = {}
         params['channel'] = {'type': 'string', 'required': 'yes',
                              'note': 'Can be comma-separated list.',
@@ -329,7 +331,8 @@ class TiltAPI(Resource):
                              'format': 'yyyy[MMdd[hhmm]]', 'default': 'now'}
         params['rank'] = {'type': 'int', 'required': 'no', 'default': 1,
                           'note': ('A rank of 0 will return the best '
-                                   'possible rank.')}
+                                   'possible rank.'),
+                          'options': ranks}
         params['timezone'] = {'type': 'string', 'required': 'no',
                               'default': 'hst'}
         params['series'] = {'type': 'string', 'required': 'no',

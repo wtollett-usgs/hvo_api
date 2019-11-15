@@ -96,6 +96,8 @@ class SO2HighResAPI(Resource):
             settings.setdefault('sort_keys', True)
             current_app.config['RESTFUL_JSON'] = settings
 
+        ranks = [{'rid': x.rid, 'name': x.name}
+                 for x in so2highres.SO2HighResRank.query.all()]
         params = {}
         params['channel'] = {'type': 'string', 'required': 'yes',
                              'note': 'Can be comma-separated list.',
@@ -106,9 +108,10 @@ class SO2HighResAPI(Resource):
                                'format': 'yyyy[MMdd[hhmm]]'}
         params['endtime'] = {'type': 'string', 'required': 'no',
                              'format': 'yyyy[MMdd[hhmm]]', 'default': 'now'}
-        params['rank'] = {'type': 'int', 'required': 'no', 'default': 2,
+        params['rank'] = {'type': 'int', 'required': 'no', 'default': 1,
                           'note': ('A rank of 0 will return the best '
-                                   'possible rank.')}
+                                   'possible rank.'),
+                          'options': ranks}
         params['timezone'] = {'type': 'string', 'required': 'no',
                               'default': 'hst'}
         params['series'] = {'type': 'string', 'required': 'no',
