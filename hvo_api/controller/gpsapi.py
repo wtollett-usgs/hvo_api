@@ -39,6 +39,8 @@ class GPSAPI(Resource):
         self.reqparse.add_argument('downsample', type=str, required=False,
                                    default='none')
         self.reqparse.add_argument('dsint', type=int, required=False)
+        self.reqparse.add_argument('noadjust', type=str, required=False,
+                                   default='F')
         super(GPSAPI, self).__init__()
 
     def get(self):
@@ -80,22 +82,23 @@ class GPSAPI(Resource):
                                        data['cov'])
                 enurows = self.column_3N_to_rows(xyz)
 
-                em = (sum(enurows[x, 0] for x in range(len(enurows)))
-                      / float(len(enurows)))
-                nm = (sum(enurows[x, 1] for x in range(len(enurows)))
-                      / float(len(enurows)))
-                um = (sum(enurows[x, 2] for x in range(len(enurows)))
-                      / float(len(enurows)))
-                for i in range(len(enurows)):
-                    enurows[i, 0] -= em
-                    enurows[i, 1] -= nm
-                    enurows[i, 2] -= um
+                if args['noadjust'] == 'F':
+                    em = (sum(enurows[x, 0] for x in range(len(enurows)))
+                          / float(len(enurows)))
+                    nm = (sum(enurows[x, 1] for x in range(len(enurows)))
+                          / float(len(enurows)))
+                    um = (sum(enurows[x, 2] for x in range(len(enurows)))
+                          / float(len(enurows)))
+                    for i in range(len(enurows)):
+                        enurows[i, 0] -= em
+                        enurows[i, 1] -= nm
+                        enurows[i, 2] -= um
 
-                lm = (sum(data['lendata'][x] for x in
-                      range(len(data['lendata'])))
-                      / float(len(data['lendata'])))
-                for i in range(len(data['lendata'])):
-                    data['lendata'][i] -= lm
+                    lm = (sum(data['lendata'][x] for x in
+                          range(len(data['lendata'])))
+                          / float(len(data['lendata'])))
+                    for i in range(len(data['lendata'])):
+                        data['lendata'][i] -= lm
 
                 List = cdata.append
                 for i in range(len(enurows)):
@@ -413,4 +416,7 @@ class GPSAPI(Resource):
         params['downsample'] = {'type': 'string', 'required': 'no',
                                 'default': 'none', 'options': DS_OPTIONS}
         params['dsint'] = {'type': 'int', 'required': 'no'}
+        params['noadjust'] = {'type': 'str', 'required': 'no',
+                              'note': 'Setting to T will disable mean-removal',
+                              'default': 'F', 'options': ['T', 'F']}
         return params
