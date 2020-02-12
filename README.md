@@ -1,5 +1,8 @@
 # HVO-API
 ---
+
+NOTE: This project has been archived and is now hosted at [code.usgs.gov](https://code.usgs.gov/vsc/hvo/hvo-api).
+
 [![Build Status](https://travis-ci.com/wtollett-usgs/hvo_api.svg?branch=master)](https://travis-ci.com/wtollett-usgs/hvo_api)
 
 HVO-API is a companion application for the [vsc-vdx](https://github.com/usgs/vsc-vdx) project. The idea is to be able to extract JSON data from VDX databases (and a few other random sources) using easily constructable URLs. Initially written as a way to learn the datasets in use at HVO, it's been continually expanded as users have requested access to different data.
